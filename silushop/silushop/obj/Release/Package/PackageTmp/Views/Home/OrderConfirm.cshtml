@@ -1,0 +1,104 @@
+﻿
+@{
+    Layout = null;
+    RelexBarDLL.RecAddress rec = ViewData["defaultRecAdd"] as RelexBarDLL.RecAddress;
+    List<RelexBarDLL.RecAddress> reclist = ViewData["reclist"] as List<RelexBarDLL.RecAddress>;
+}
+@model RelexBarDLL.ProductList
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>确认订单</title>
+    <style>
+        #recaddlist{width:100%;height:100%;position:absolute;background-color:white;top:0;z-index:1000;display:none;}
+    </style>
+    <script>
+        function recaddressClick(id, e) {
+            $("#address").val(id);
+            $("#addlist").html($(e).html());
+            $("#recaddlist").hide();
+        }
+        function order() {
+            var recadd = $("#address").val();
+            if (isNullOrEmpty(recadd)) {
+                return alert("收货地址不能为空！");
+            }
+            $.post("/Account/CreateOrder", "oid=@Request.QueryString["id"]" + "&addid="+recadd, function (data) {
+                alert(data.msg);
+                if (data.code == 1) {
+                    location.href = "/Shop/PersonCenter";
+                }
+            }, "json");
+        }
+        function isNullOrEmpty(str) {
+            if (str == null || str == "" || str.length == 0) {
+                return true;
+            }
+            return false;
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>确认订单</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="address">
+        <input type="hidden" id="address" value="@(rec==null?"":rec.ID.ToString())"/>
+        <ul id="addlist">
+            @if (rec != null)
+            {
+                <li>
+                    <div class="address_info">
+                        <h6>@rec.Address.Replace(",", "")</h6>
+                        <p>@rec.TrueName  @rec.Phone</p>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="catraddres_btn"><a href="#" onclick="$('#recaddlist').show()" style="background:#5ca87e">选择收货地址</a></div>
+    <div class="cartlist">
+        <dl class="nochoose">
+            <dd>
+                <div class="cartlist_pic"><a href="#" title="" class="cartlist_thumb"><img src="@Model.Img" alt=""></a></div>
+                <div class="cartlist_info">
+                    <h5><strong>@Model.Name</strong></h5>
+                    <h5><strong>@Model.Title</strong></h5>
+                    <a href="#" title="" class="cartlist_del"></a>
+                </div>
+            </dd>
+        </dl>
+    </div>
+    <div class="cartbalancebox"></div>
+    <div class="cartbalance cartbalance_nochoose" style="bottom:0;">
+        <div class="cartbalance_info"></div>
+        <a href="#" title="" class="cartbalance_btn" onclick="order()">确认</a>
+    </div>
+    <div id="recaddlist">
+        <div class="header">
+            <h3>收货地址</h3>
+            <a href="#" title=""><i class="icon-chevron-thin-left" onclick="$('#recaddlist').hide()"></i></a>
+        </div>
+        <div class="address">
+            <ul>
+                @for (int i = 0; i < reclist.Count; i++)
+            {
+                    <li onclick="recaddressClick('@reclist[i].ID',this)">
+                        <div class="address_info">
+                            <h6>@reclist[i].Address.Replace(",","")</h6>
+                            <p>@reclist[i].TrueName  @reclist[i].Phone</p>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="h20"></div>
+        <div class="btn1"><a href="/Account/RecAddress"><input type="button" value="地址管理" /></a></div>
+        <div class="h20"></div>
+    </div>
+    
+</body>
+</html>

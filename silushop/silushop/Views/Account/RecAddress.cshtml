@@ -1,0 +1,89 @@
+﻿
+@{
+    Layout = null;
+}
+@model List<RelexBarDLL.RecAddress>
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>收货地址</title>
+    <style>
+        #editaddress{
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                background-color: white;
+                top: 0;
+                left: 0;
+                z-index: 1000;display:none;
+        }
+        select{border:none;}
+    </style>
+    <script>
+        function editAdd(id) {
+            $.post("/Account/EditAddress/" + id, null, function (data) {
+                $("#editaddress").html(data);
+                editinit();
+                $("#editaddress").show();
+
+            },"html");
+        }
+        function setDefaultAdd(id,e){
+            $.post("/Account/SetDefault/"+id,null,function(data){
+                if(data.code==1){
+                    $("#addlist li").removeClass("default_active");
+                    $(e).parent().parent().addClass("default_active");
+                }else{
+                    alert(data.msg);
+                }
+            },"json");
+        }
+        function deleteAdd(id, e) {
+            if (!confirm("是否删除该地址？")) {
+                return;
+            }
+            $.post("/Account/DeleteAddredd/"+id, null, function (data) {
+                if (data.code == 1) {
+                    $(e).parent().parent().remove();
+                } else {
+                    alert(data.msg);
+        }
+            }, "json");
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>收货地址</h3>
+        <a onclick="window.history.back()"  title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="address">
+        <ul id="addlist">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <li class="@(Model[i].IsDefault!=null&&Model[i].IsDefault==1?"default_active":"")">
+                    <div class="address_info">
+                        <h6>@Model[i].Address.Replace(",", "")</h6>
+                        <p>@Model[i].TrueName  @Model[i].Phone</p>
+                        <i class="icon-trash-2" onclick="deleteAdd('@Model[i].ID',this)"></i>
+                    </div>
+                    <div class="address_edit">
+                        <div class="address_edit_default" onclick="setDefaultAdd('@Model[i].ID', this)"><i class="icon-checkmark"></i>设置默认</div>
+                        <a onclick="editAdd('@Model[i].ID')" title="" class="address_edit_btn"><i class="icon-write"></i></a>
+                    </div>
+                </li>
+            }
+
+        </ul>
+    </div>
+    <div class="h20"></div>
+    <div class="btn1"><input type="button" onclick="editAdd(null)" value="新增地址"/></div>
+    <div class="h20"></div>
+    <div id="editaddress">
+
+
+    </div>
+</body>
+</html>

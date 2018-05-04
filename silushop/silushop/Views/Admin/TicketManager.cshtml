@@ -1,0 +1,76 @@
+﻿<style>
+    #uppwdpanel, #addpanel {
+        margin-top: 10%;
+        padding: 0;
+    }
+</style>
+<script>
+    var hasFooter = false;
+    var TicketManager = {};
+    TicketManager.searchKey = "";
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetTicketList(p);
+                }
+            });
+            hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        GetTicketList(index);
+    };
+    //获取用户列表
+    function GetTicketList(index) {
+        waiting();
+        $.get("TicketList", "index=" + index + "&key=" + TicketManager.searchKey, function (data) {
+            TicketManager.index = index;
+            $("#Ticketbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    function USearch() {
+        TicketManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetTicketList(1);
+    }
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">管理员管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+    <input value="新增" type="button" class="btn btn-primary" onclick="$('#addTicket').show()" />
+    <div class="col-lg-12" id="Ticketlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>账号</th>
+                    <th>创建时间</th>
+                    <th>状态</th>
+
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="Ticketbody">
+                @Html.Action("TicketList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>

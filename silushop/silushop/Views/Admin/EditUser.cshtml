@@ -1,0 +1,80 @@
+﻿@model RelexBarDLL.Users
+<div class="col-md-10 col-md-offset-2 form-group editItem">
+    @*<div class="form-inline">
+        <div class="col-md-3">手机号：</div>@Html.TextBoxFor(m=>m.Phone,new { @class= "form-control" })
+    </div>*@
+    <div class="form-inline">
+        <div class="col-md-3">账号：</div>
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+    <div class="">
+        <div class="col-md-3">头像：</div>@Html.HiddenFor(m => m.HeadImg1)@Html.HiddenFor(m=>m.ID)
+        <input type="file" id="upload" style="display:none" onchange="HeadImgUpload(this)"/>
+        <img id="headimage" onclick="$('#upload').click()" src="@(string.IsNullOrEmpty(Model.HeadImg1)?"/img/chat/head.jpg":Model.HeadImg1)"/>
+        <br />
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">姓名：</div>@Html.TextBoxFor(m=>m.TrueName, new { @class = "form-control"})
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">级别：</div>
+        @Html.DropDownListFor(m => m.LV, new List<SelectListItem>() {
+       new SelectListItem() { Text = "股东", Value = "2" },
+       new SelectListItem() { Text = "行商", Value = "3" },
+       new SelectListItem() { Text = "牙商", Value = "1" },
+       new SelectListItem() { Text = "普通用户", Value = "0" }
+        }, new { @class = "form-control" })
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">易物券：</div>
+        <input class="form-control" type="text" value="@ViewData["sljf"]" readonly="readonly" />
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">添加易物券：</div>
+        <select class="form-control" id="addScoreBefore" name="addYWQ">
+            <option value="1">+</option>
+        </select>
+        <input type="text" class="form-control" id="YWQ" name="YWQ" />
+    </div>
+    <div class="hidden">
+        <div class="form-inline">
+            <div class="col-md-3">性别：</div>@Html.DropDownListFor(m => m.Sex, new List<SelectListItem>() { new SelectListItem() { Text = "男", Value = "0" }, new SelectListItem() { Text = "女", Value = "1" } }, new { @class = "form-control" })
+        </div>
+        <div class="form-inline">
+            <div class="col-md-3">可提现金额：</div>@Html.TextBoxFor(m => m.Score, new { @class = "form-control", @readonly = "true" })
+        </div>
+        <div class="form-inline">
+            <div class="col-md-3">添加可提现金额：</div><input type="text" class="form-control" id="AddScore" name="AddScore" />
+        </div>
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">行票券：</div>
+        @Html.TextBoxFor(m => m.Balance, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">添加行票券：</div>
+        <select class="form-control" id="addScoreBefore" name="addScoreBefore">
+            <option value="1">+</option>
+            <option value="2">-</option>
+        </select>
+        <input type="text" class="form-control" id="AddScore" name="AddBalance" />
+    </div>    
+    <div class="form-inline">
+        <div class="col-md-3">行票消费券：</div>
+        @Html.TextBoxFor(m => m.ShoppingVoucher, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">添加行票消费券：</div>
+        <select class="form-control" id="addShoppingVoucherBe" name="addShoppingVoucherBe">
+            <option value="1">+</option>
+            <option value="2">-</option>
+        </select>
+        <input type="text" class="form-control" id="addShoppingVoucher" name="addShoppingVoucher" />
+    </div>
+    <div class="form-inline">
+        <div class="col-md-3">注册时间：</div>@Html.TextBox("CreateTime",Model.CreateTime.Value.ToString("yyyy-MM-dd HH:mm"), new { @class = "form-control",@readonly="true" })
+    </div>
+    @*<div class="form-inline">
+        <div class="col-md-2">状态：</div>@Html.TextBoxFor(m => m.Status, new { @class = "form-control" })
+    </div>*@
+</div>

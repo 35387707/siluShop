@@ -1,0 +1,16 @@
+﻿@model List<RelexBarDLL.UserMsg>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Title</td>
+        <td>@Model[i].Content.split(0,200)<a onclick="contentShow('@Model[i].ID')">查看</a></td>
+        <td>
+            <input type="button" class="btn btn-danger" value="@((Model[i].IsShow==1)?"是":"否")" onclick="CStatus('@Model[i].ID',this)" />
+        </td>
+        <td>@Model[i].CreateTime</td>
+        <td><input type="button" value="修改" onclick="EditSysMsg('@Model[i].ID')" class="btn btn-danger" />
+            <input type="button" value="删除" onclick="DelSysMsg('@Model[i].ID',this)" class="btn btn-danger" />
+        </td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

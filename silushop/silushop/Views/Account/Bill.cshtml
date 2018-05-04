@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+    string t = Request.QueryString["t"];
+    if (string.IsNullOrEmpty(t))
+    { t = "1"; }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <script type="text/javascript" src="/js/ainatec.js"></script>
+    <title>收支明细</title>
+    <script>
+        var index = 1;
+        var sync = 1;
+        function GetBill() {
+            
+            $.post("/Account/Bill2", "type=@t&" + "index=" + index++, function (data) {
+                var list = JSON.parse(data.msg);
+                var temp = [];
+                for (var i = 0; i < list.length; i++) {
+                    temp.push('<li><a href="#" title=""><span>' + list[i].Remark + '</span><h5></h5><div><span>' + list[i].CreateTime + '</span><p>' + showPrice(list[i]) + '</p></div></a></li>');
+                }
+                $("#paylist").append(temp.join(""));
+                if (list.length > 0) {
+                    sync = 1;
+                }
+            });
+        }
+        function showPrice(row) {
+            if (row.InOut == 1) {
+                return row.Val;
+            }
+            return -row.Val;
+        }
+        $(function () {
+            GetBill();
+        });
+        $(document).scroll(
+            function () {
+                if ($(document).scrollTop() + window.innerHeight == $(document).height() && sync) {
+                    if (!sync) {
+                        return;
+                    }
+                    sync = 0;
+                    GetBill();
+                }
+            });
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>
+        @switch (t)
+        {
+            case "1": Write("易物券"); break;
+            case "2": Write("回馈易物券"); break;
+            case "3": Write("今日行票"); break;
+            case "4": Write("行票消费券"); break;
+        }
+        </h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="expenseslist">
+        <ul id="paylist">
+        </ul>
+    </div>
+
+</body>
+</html>

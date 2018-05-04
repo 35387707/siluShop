@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = null;
+}
+@model List<RelexBarDLL.UserMsg>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>我的消息</title>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>我的消息</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="expenseslist">
+        <ul id="paylist">
+            @foreach (var a in Model)
+            {
+                <li>
+                    <a href="/Shop/HeadDetail/@a.ID" title="">
+                        <span>@a.CreateTime.Value.ToString("yyyy.MM.dd") </span><h5>@a.Title</h5><div>
+                            <span></span><p></p>
+                        </div>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="footnav">
+        @Html.Action("ShopFooter", "Static", new { id = 2 })
+    </div>
+</body>
+</html>

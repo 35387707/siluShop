@@ -1,0 +1,268 @@
+﻿<style>
+    .bankShow{}
+    .showBackList{position:absolute;top:50%;left:50%;background-color:white;width:600px;margin-left:-300px;margin-top:-200px;}
+    .editUserBody {
+        margin-top:10%;
+    }
+    .editItem>div {
+        margin: 10px 0;
+    }
+        .editItem > div > div {text-align:right;}
+</style>
+<script>
+    var hasFooter = false;
+    var UserManager = {};
+    UserManager.searchKey = "";
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+            
+                totalPage:parseInt((sum-1)/10+1),
+               // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetUserList(p);
+                }
+            });
+            hasFooter = true;
+        }
+        
+    }
+    function toPage(index) {
+        GetUserList(index);
+    };
+    //获取用户列表
+    function GetUserList(index) {
+        waiting();
+        $.get("UserList", "index=" + index + "&key=" + UserManager.searchKey, function (data) {
+            UserManager.index = index;
+            $("#userbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    function USearch() {
+        UserManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetUserList(1);
+    }
+    function bankShow(UID) {
+        waiting();
+        $.post("GetBankList", "UID=" + UID, function (data) {
+            if (data.code == "1") {
+                var temp = [];
+                var list=JSON.parse(data.msg);
+                for (var i = 0; i < list.length; i++) {
+                    temp.push("<tr><td>"+list[i].BankAccount+"</td><td>" + list[i].BankName + "</td><td>" + list[i].BankZhiHang + "</td><td>" + list[i].BankUser + "</td></td>");
+                }
+                $("#bankListData").html(temp.join(""));
+                $("#bankShow").show();
+                waitingHide();
+            }
+        }, "json");
+        
+    }
+    //更改用户状态
+    function CUStatus(UID, e) {
+        waiting();
+        var status = 1;
+        if (e.value == "启用")
+        { status = 0; }
+        $.post("CUStatus", "UID=" + UID+"&status="+status, function (data) {
+            if (data.code == "1") {
+                if (status == 1) {
+                    e.value = "启用";
+                } else {
+                    e.value = "禁用";
+                }
+            } else {
+                alert(data.msg);
+            }
+            waitingHide();
+        }, "json")
+    }
+    function EditUser(id) {
+        waiting();
+        $.get("/Admin/EditUser/" + id, function (data) {
+            $("#editUserBody").html(data);
+
+            $("#editUser").show();
+            waitingHide();
+        }, "html")
+    }
+    //修改头像
+    function HeadImgUpload(file) {
+        var data = new FormData();
+        data.append("file", file.files[0], file.files[0].name);
+        $.ajax({
+            url: "/File/UploadHeadImg",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (respdata) {
+                if (respdata.code == '1') {
+                    //var reader = new FileReader();
+                    //reader.onload = function (evt) {
+                    //    $("#headimage").attr("src", evt.target.result);
+                    //}
+                    //reader.readAsDataURL(file.files[0]);
+                    $("#HeadImg1").val(respdata.msg);
+                    $("#headimage").attr("src", respdata.msg);
+                } else {
+                    alert(respdata.msg);
+                }
+            },
+            error: function (data) {
+                alert("错误");
+            }
+        });
+
+    }
+    function saveUser() {
+        $.post("/Admin/DoEditUser", $("#editUserForm").serialize(), function (data) {
+            alert(data.msg);
+            if (data.code == "1") {
+                GetUserList(UserManager.index);
+            }
+        }, "json");
+    }
+    function resetpwd(id) {
+        if (!confirm("是否重置该账户密码？")) {
+            return;
+        }
+        $.post("/Admin/ResetPwd","id="+id, function (data) {
+            alert(data.msg);
+            if (data.code == "1") {
+                GetUserList(UserManager.index);
+            }
+        }, "json");
+    }
+    function sendMsgShow(type, recuid) {
+        if (type == 1) {
+            $("#smsglabel").text("所有用户通知消息将收到此消息");
+        } else {
+            $("#smsglabel").text("");
+        }
+        $("#msgcontent").val("");
+        $("#smsgtype").val(type);
+        $("#recuid").val(recuid);
+        $("#sendmsg").show();
+    }
+    function sendmsg() {
+        var type = $("#smsgtype").val();
+        var content = $("#msgcontent").val();
+        if (type == "") {
+            return alert("参数不正确");
+        }
+        var recuid = $("#recuid").val();
+        if (type == 0 && recuid == "") {
+            return alert("参数不正确");
+        }
+        $.post("/Admin/SendMsg", "sendType=" + type + "&recuid=" + recuid + "&content=" + content, function (data) {
+            alert(data.msg);
+            if (data.code == 1) {
+                $("#sendmsg").hide();
+            }
+        }, "json");
+
+    }
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">用户管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+        <span class="btn btn-success" onclick="sendMsgShow(1,'')">发送通知消息</span>
+    <div class="col-lg-12" id="userlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    @*<th>会员编号</th>*@
+                    <th>账号</th>
+                    <th>姓名</th>
+                    <th>级别</th>
+                    <th>易物券</th>
+                    <th>回馈易物券</th>
+                    <th>可回购行票</th>
+                    <th>行票消费券</th>
+                    <th>银行卡信息</th>
+                    <th>分享人电话</th>
+                    <th>分享人</th>
+                    <th>状态</th>
+                    <th>开户时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="userbody">
+                @Html.Action("UserList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack" id="bankShow">
+    <div class="showBackList">
+        <input type="button" class="btn btn-primary" style="float:right;" value="关闭" onclick="$('#bankShow').hide()" />
+        <div class="form-inline">
+            <h3 class="text-center">银行卡信息</h3>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>账号</th>
+                    <th>开户行</th>
+                    <th>银行支行</th>
+                    <th>持卡人</th>
+                </tr>
+            </thead>
+            <tbody id="bankListData">
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="showBack col-md-12" id="editUser">
+    <div class="editUserBody col-md-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">修改用户<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="$('#editUser').hide()" /></div>
+            <div class="panel-body">
+                <form id="editUserForm">
+                    <div  id="editUserBody"></div>
+                </form>
+            </div>
+            <div class="panel-footer" style="overflow:hidden">
+                <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="saveUser()"/>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="showBack col-md-12" id="sendmsg">
+    <div class="editUserBody col-md-4 col-md-offset-4">
+        <div class="panel panel-primary">
+            <input type="hidden" id="smsgtype" />
+            <input type="hidden" id="recuid" />
+            <div class="panel-heading">发送通知消息<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="$('#sendmsg').hide()" /></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div>
+                        <label id="smsglabel" style="color:red">所有用户通知消息将收到此消息</label>
+                    </div>
+                    <textarea class="form-control" id="msgcontent" rows="5"></textarea>
+                </div>
+
+            </div>
+            <div class="panel-footer" style="overflow:hidden">
+                <input type="button" value="发送" class="btn btn-primary" style="float:right" onclick="sendmsg()" />
+            </div>
+        </div>
+    </div>
+</div>

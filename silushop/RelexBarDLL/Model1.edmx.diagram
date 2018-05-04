@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ec570939a78c493e9a83ee42b851db10" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="RelexBarModel.AdminUser" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.AdsList" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.BankList" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Cart" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.RecAddress" Width="1.5" PointX="8.75" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Recharge" Width="1.5" PointX="8.75" PointY="8.75" />
+        <EntityTypeShape EntityType="RelexBarModel.RedPacket" Width="1.5" PointX="10.75" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.RedPacketList" Width="1.5" PointX="10.75" PointY="8.75" />
+        <EntityTypeShape EntityType="RelexBarModel.SysConfig" Width="1.5" PointX="2.75" PointY="11.75" />
+        <EntityTypeShape EntityType="RelexBarModel.TransferOut" Width="1.5" PointX="4.75" PointY="11.75" />
+        <EntityTypeShape EntityType="RelexBarModel.VerifyCodes" Width="1.5" PointX="6.75" PointY="12.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Web_Area" Width="1.5" PointX="13.375" PointY="8.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Category" Width="1.5" PointX="9.375" PointY="13.75" />
+        <EntityTypeShape EntityType="RelexBarModel.vw_Orders" Width="1.5" PointX="13.375" PointY="11.75" />
+        <EntityTypeShape EntityType="RelexBarModel.UserMsg" Width="1.5" PointX="15.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Report" Width="1.5" PointX="0.75" PointY="15.75" />
+        <EntityTypeShape EntityType="RelexBarModel.OtherPayServiceLog" Width="1.5" PointX="15.375" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Logs" Width="1.5" PointX="15.375" PointY="9.75" />
+        <EntityTypeShape EntityType="RelexBarModel.OrderList" Width="1.5" PointX="3.375" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.RechargeCard" Width="1.5" PointX="5.375" PointY="5.75" />
+        <EntityTypeShape EntityType="RelexBarModel.PayRecord" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.PayListDetail" Width="1.5" PointX="3.375" PointY="16.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Holidays" Width="1.5" PointX="5.375" PointY="16.75" />
+        <EntityTypeShape EntityType="RelexBarModel.UserHelp" Width="1.5" PointX="17.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Users" Width="1.5" PointX="15.375" PointY="13.75" />
+        <EntityTypeShape EntityType="RelexBarModel.AdminMenu" Width="1.5" PointX="17.375" PointY="8.75" />
+        <EntityTypeShape EntityType="RelexBarModel.Shop" Width="1.5" PointX="17.375" PointY="11.75" />
+        <EntityTypeShape EntityType="RelexBarModel.TrueProduct" Width="1.5" PointX="17.375" PointY="14.75" />
+        <EntityTypeShape EntityType="RelexBarModel.FavoritesProduct" Width="1.5" PointX="17.375" PointY="4.75" />
+        <EntityTypeShape EntityType="RelexBarModel.AdminMsg" Width="1.5" PointX="0.75" PointY="18.75" />
+        <EntityTypeShape EntityType="RelexBarModel.OrderProductList" Width="1.5" PointX="9.375" PointY="18.75" />
+        <EntityTypeShape EntityType="RelexBarModel.ProductList" Width="1.5" PointX="19.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.RecordsOfConsumption" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="RelexBarModel.PayList" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RelexBarModel.AdminRole" Width="1.5" PointX="5.375" PointY="19.75" />
+        <EntityTypeShape EntityType="RelexBarModel.AdminRoleMenu" Width="1.5" PointX="19.375" PointY="7.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = null;
+    List<RelexBarDLL.ProductList> plist = ViewData["randProduct"] as List<RelexBarDLL.ProductList>;
+    List<RelexBarDLL.AdsList> adslist = ViewData["ads"] as List<RelexBarDLL.AdsList>;
+    List<RelexBarDLL.AdsList> bodyadlist= ViewData["ads1"] as List<RelexBarDLL.AdsList>;
+    List<RelexBarDLL.UserMsg> ttlist = ViewData["toutiao"] as List<RelexBarDLL.UserMsg>;
+}
+@model List<CateGoryProductModel>
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>首页</title>
+    <style>
+        .inporduct ul li img{height:14rem;}
+    </style>
+    <script>
+        $(function () {
+            $("#search").on("click", function () {
+                var key=$("#key").val();
+                if (key != "") {
+                   
+                    location.href = "/Shop/AllProductList/"+key;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="headersearch">
+        <div class="searchbox">
+            <input type="text" class="searchtxt" placeholder="搜索" id="key"/>
+            <span><input type="button" id="search" value="" /><i class="icon-search"></i></span>
+        </div>
+    </div>
+    <div class="h-title1" style="height:2rem">当前用户数：@ViewData["hyCount"] 人，牙商用户数：@ViewData["yaCount"] 人</div>
+    <div class="swiper-container" id="in-banner">
+        <div class="swiper-wrapper">
+            @for (int i = 0; i < adslist.Count; i++)
+            {
+                <div class="swiper-slide" id="silde1"><a href="/account/GotoURL?url=@Server.UrlEncode(adslist[i].LinkTo)"><img src="@adslist[i].Img" alt="" /></a></div>
+            }
+        </div>
+        <div class="pagination"></div>
+    </div>
+
+    <script type="text/javascript">
+	$(function(){
+		var mySwiper = new Swiper('#in-banner',{
+			loop: true,
+			calculateHeight: true,
+			autoplay: 5000,
+			pagination:'.pagination',
+			paginationClickable: true
+		})
+	})
+    </script>
+    @*<div class="innews">
+        <div class="innews_list">
+            <ul>
+                @for (int i = 0; i < ttlist.Count; i++)
+                {
+                    <li><a href="/Shop/HeadDetail/@ttlist[i].ID" title=""><span>热议</span>@ttlist[i].Title</a></li>
+                }
+            </ul>
+        </div>
+        <i><a href="#" title=""><img src="/images/ico6.png" alt=""></a></i>
+    </div>
+    <div class="h-title1"><a href="#" title=""><img src="/images/qywh.jpg"></a></div>
+    <div class="inpro1 clearfix">
+        <div class="inpro_list clearfix">
+            <div class="inpro_content">
+                <p>
+                    “十三行”从历史中走来，代表着中国近代的辉煌。以十三行“牙商”为代表的“果敢、诚信、务实、包容”的精神形成了广府文化的核心，至今深深影响着正在崛起的中国。“岭南十三行”已经国家工商总局批准成功注册商标，隶属于丝路集团下辖品牌，丝路联盟本着“传承广府文化、弘扬牙商精神”的宗旨，隆重推出“岭南十三行”牙商、行商、行票等内容，合力打造“千城万店”、“实体产业链+互联网”等新的十三行形象，服务实体经济，全力推广扶平（贫），擦亮广府文化的金字招牌。
+                    丝路联盟，携手同行；千城万店，共建共赢！
+                    </p>
+            </div>
+        </div>
+    </div>*@
+    <div class="footnavbox"></div>
+    <div class="footnav">
+        @Html.Action("ShopFooter","Static",new{id=0})
+    </div>
+</body>
+</html>

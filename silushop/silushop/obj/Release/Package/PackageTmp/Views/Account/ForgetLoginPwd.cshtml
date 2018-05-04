@@ -1,0 +1,79 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>重置登陆密码</title>
+    <style>
+        #pwd,#pwd2{width:100%; border:0; height:5rem; line-height:5rem; font-size:1.6rem;}
+    </style>
+    <script>
+        $(function () {
+            $("#yzm").on("click", function () {
+                var phone=$("#phone").val();
+                if(phone==""||phone.length!=11){
+                    return alert("手机号不正确");
+                }
+                var c = 60;
+                $(this).attr("disabled", "disabled");
+                var timer = setInterval(function () {
+                    c--;
+                    if (c == 0) {
+                        $("#yzm").val("获取验证码");
+                        $("#yzm").removeAttr("disabled");
+                        clearInterval(timer);
+                    } else {
+                        $("#yzm").val(c + "秒后重试");
+                    }
+
+                }, 1000);
+                $.post("/Verifycode/getVerifyCode?t=2&r="+phone+"&v=" + Math.random(), null, function (data) { }, "json");
+
+            });
+        });
+        function CLoginPwd() {
+            var code = $("#code").val();
+            if (code == "") { return alert("验证码不能为空");}
+            var pwd = $("#pwd").val();
+            if (pwd.length < 6) { return alert("密码长度不能小于6位数"); }
+            var pwd2 = $("#pwd2").val();
+            if (pwd != pwd2) { return alert("两次密码不一致");}
+            $.post("/Account/CLoginPwd", "pwd="+pwd+"&code="+code, function (data) {
+                alert(data.msg);
+                if (data.code == 1) {
+                    location.href = "/Account/Login";
+                }
+            },"json");
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>重置登陆密码</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="phone_verification">
+        <div class="pv-item">
+            <input type="text" id="phone" placeholder="请输入手机号码" />
+        </div>
+        <div class="pv-item">
+            <input type="text" id="code" placeholder="请输入验证码" />
+            <!--<span class="pv-btn">获取验证码</span>-->
+            <input class="pv-btn" type="button" id="yzm" value="获取验证码" />
+        </div>
+        <div class="pv-item">
+            <input type="password" id="pwd" placeholder="请输入新密码" /><i class="icon-lock"></i>
+        </div>
+        <div class="pv-item">
+            <input type="password" id="pwd2" placeholder="确认新密码" /><i class="icon-lock"></i>
+        </div>
+    </div>
+    <div class="h20"></div>
+    <div class="btn1"><input type="button" onclick="CLoginPwd()" value="确认" /></div>
+</body>
+</html>

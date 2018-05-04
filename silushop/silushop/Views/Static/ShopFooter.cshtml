@@ -1,0 +1,21 @@
+﻿@model int
+@*<ul class="clearfix">
+    <li><a href="/Shop/Index" title=""><i class="icon-home"></i><strong>首页</strong></a></li>
+    <li><a href="/Shop/Category" title=""><i class="icon-cate"></i><strong>分类</strong></a></li>
+    <li><a href="/Shop/AllProductList" title=""><i class="icon-shop"></i><strong>商城</strong></a></li>
+    <li><a href="/Shop/ShoppingCart" title=""><i class="icon-cart"></i><strong>购物车</strong></a></li>
+    <li><a href="/Shop/PersonCenter" title=""><i class="icon-user"></i><strong>我的</strong></a></li>
+</ul>
+<script>
+    $(".footnav .clearfix li").eq(@Model).addClass("active");
+</script>*@
+<ul class="clearfix">
+    <li><a href="/Shop/Index" title=""><i class="icon-home" style="content:url('/images/bottom1.png')"></i><strong>首页</strong></a></li>
+    <li><a href="/Shop/Category" title=""><i class="icon-shop" style="content:url('/images/bottom2.png')"></i><strong>商城</strong></a></li>
+    <li><a href="/Shop/MessageList" title=""><i class="icon-cate" style="content:url('/images/bottom3.png')"></i><strong>消息</strong></a></li>
+    <li><a href="/Shop/ShoppingCart" title=""><i class="icon-cart" style="content:url('/images/bottom4.png')"></i><strong>购物车</strong></a></li>
+    <li><a href="/Shop/PersonCenter" title=""><i class="icon-user" style="content:url('/images/bottom5.png')"></i><strong>我的联盟</strong></a></li>
+</ul>
+<script>
+    $(".footnav .clearfix li").eq(@Model).addClass("active");
+</script>

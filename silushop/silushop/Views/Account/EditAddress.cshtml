@@ -1,0 +1,151 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.RecAddress
+@{string[] area = Model != null ? Model.AreaID.Split(',') : new string[4];}
+<script>
+    function sexClick(id,e) {
+        $("#Sex").val(id);
+        $(".sex span").removeClass("active");
+        $(e).addClass("active");
+    }
+    function GetAdd(fid, did, val,fun) {
+
+        $.post("/Area/GetAreas", "fid=" + fid, function (data) {
+            var area = [];
+            for (var i = 0; i < data.length; i++) {
+                area.push("<option value='" + data[i].ID + "'>" + data[i].Name + "</option>");
+            }
+            $("#" + did).html(area.join(""));
+            $("#" + did).change();
+            if (val) {
+                $("#" + did).val(val);
+            }
+            if (fun && typeof (fun) == "function") {
+                fun();
+            }
+        }, "json")
+    }
+    function cityChange(e,nextsel) {
+        GetAdd(e.value, nextsel);
+    }
+    function addsave() {
+        var id = $("#ID").val();
+        var name = $("#TrueName").val();
+        if (isNull(name)) {
+            return alert("收货人姓名不能为空");
+        }
+        var sex = $("#Sex").val();
+        if (isNull(sex)) {
+            return alert("性别不能为空");
+        }
+        var phone = $("#Phone").val();
+        if (isNaN(phone)) {
+            return alert("电话不能为空");
+        }
+        var city = $("#addcity").val();
+        if (isNull(city)) {
+            return alert("城市不能为空");
+        }
+        var qu = $("#addxq").val();
+        if (isNaN(qu)) {
+            return alert("区域不能为空");
+        }
+        var adddetail = $("#Address").val();
+        if (isNull(adddetail)) {
+            return alert("详细地址不能为空");
+        }
+        $.post("/Area/EditAddress", "id=" + id + "&name=" + name + "&sex=" + sex + "&phone=" + phone
+            + "&qu=" + qu + "&detail=" + adddetail, function (data) {
+                alert(data.msg);
+                if (data.code == 1) {
+                    location.reload();
+                }
+            }, "json");
+    }
+    function editinit() {
+        if ("@Model" != "") {
+            GetAdd(1, "sheng", "@area[1]", function () {
+                GetAdd("@area[1]", "addcity", "@area[2]", function () {
+                    GetAdd("@area[2]", "addxq", "@area[3]");
+                });
+            });
+
+
+        } else {
+            GetAdd(1, "sheng");
+        }
+    }
+    function isNull(str) {
+        if (str == null || str.length == 0) {
+            return true;
+        }
+        return false;
+    }
+</script>
+    <div class="header">
+        <h3>添加地址</h3>
+        <a onclick="$('#editaddress').hide()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="addressadd">
+        <ul>
+            <li>
+                <div class="addressadd_title">联系人</div>
+                <div class="addressadd_con"><div class="addressadd_txt">@Html.HiddenFor(m => m.ID)
+                    @Html.TextBoxFor(m => m.TrueName, new { placeholder = "收货人姓名" })</div></div>
+            </li>
+            <li>
+                <div class="addressadd_title">性别</div>
+                <div class="addressadd_con"><div class="sex">
+                    @Html.Hidden("Sex", Model == null ? 0 : Model.Sex)
+                    <span class="@(Model==null||Model.Sex==0?"active":"")" onclick="sexClick(0,this)"><i></i> 男士</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span class="@(Model!=null&&Model.Sex==1?"active":"")" onclick="sexClick(1,this)"><i></i> 女士</span></div></div>
+            </li>
+            <li>
+                <div class="addressadd_title">电话</div>
+                <div class="addressadd_con"><div class="addressadd_txt">
+                    @Html.TextBoxFor(m => m.Phone, new { @class = "addressadd_txt", maxlength = "11", placeholder = "收货人电话" })
+                   </div></div>
+            </li>
+            <li>
+                <div class="addressadd_title">省/自治区</div>
+                <div class="addressadd_con"><div class="addressadd_txt">
+                    <select class="addressadd_txt" id="sheng" onchange="cityChange(this,'addcity')"></select>
+                    <i class="icon-chevron-thin-left"></i></div></div>
+            </li>
+            <li>
+                <div class="addressadd_title">城市</div>
+                <div class="addressadd_con"><div class="addressadd_txt">
+                 <select id="addcity" class="addressadd_txt" onchange="cityChange(this,'addxq')"></select>
+                   <i class="icon-chevron-thin-left"></i></div></div>
+            </li>
+            <li>
+                <div class="addressadd_title">区/县</div>
+                <div class="addressadd_con">
+                    <div class="addressadd_txt">
+                        <select class="addressadd_txt" id="addxq"></select>
+                        <i class="icon-chevron-thin-left"></i>
+                    </div>
+                </div>
+            </li>
+            @*<li>
+                <div class="addressadd_title">小区/大厦</div>
+                <div class="addressadd_con"><div class="addressadd_txt">
+                    <select class="addressadd_txt" id="addxq"></select><i class="icon-chevron-thin-left"></i></div></div>
+            </li>*@
+            <li>
+                <div class="addressadd_title">详细地址</div>
+                <div class="addressadd_con"><div class="addressadd_txt">
+                    @Html.TextBox("Address", Model == null ? "" : Model.Address.Split(',')[1], new { @class = "addressadd_txt", placeholder = "例：xx路16号楼502室" })
+                    </div></div>
+            </li>
+            @*<li>
+                <div class="addressadd_title">标签</div>
+                <div class="addressadd_con"><div class="label"><a href="#" title="">公司</a><a href="#" title="">学校</a><a href="#" title="">家</a><a href="#" title="">其他</a></div></div>
+            </li>*@
+        </ul>
+    </div>
+    <div class="h20"></div>
+    <div class="btn1"><input type="button" value="保存" onclick="addsave()"/></div>
+    <div class="h20"></div>

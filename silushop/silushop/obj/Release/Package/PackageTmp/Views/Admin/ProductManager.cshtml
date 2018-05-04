@@ -1,0 +1,581 @@
+﻿<script language="javascript" type="text/javascript" src="~/Scripts/My97DatePicker/WdatePicker.js"></script>
+<style>
+    .upimglist {
+        width: 100px;
+        margin: 10px;
+    }
+
+    #divimglist {
+        overflow: hidden;
+        padding: 10px 0;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+        #divimglist div {
+            float: left;
+            position: relative;
+        }
+
+    .ilclose {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        background-image: url("/img/fancybox_sprite.png");
+        background-repeat: no-repeat;
+        position: absolute;
+        right: -3px;
+        top: -6px;
+    }
+
+    #editCategory .panel-body > div {
+        margin-top: 10px;
+    }
+
+    .icon-remove {
+        background-image: url("/img/remove.png");
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+    }
+</style>
+<script>
+    var hasFooter = false;
+    var ProductManager = {};
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetProductList(p);
+                }
+            });
+            hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        GetProductList(index);
+    };
+    function search(_nowindex) {
+        var key = $("#key").val();
+        var Status = $("#Status").val();
+        ProductManager.key = key;
+        ProductManager.Status = Status;
+        $(".pagination").html("");
+        hasFooter = false;
+        GetProductList(typeof (_nowindex) == "undefined" ? 1 : _nowindex);
+    }
+    //获取用户列表
+    function GetProductList(index) {
+        waiting();
+        $.get("ProductList","index="+index +"&key=" + ProductManager.key + "&Status=" + ProductManager.Status, function (data) {
+            $("#productlistbody").html(data);
+            waitingHide();
+            }, "html")
+    }
+    function EditProduct(id) {
+        waiting();
+        $.post("/Admin/EditProduct/" + id, null, function (data) {
+            $("#editProductBody").html(data);
+            $("#editProudct").show();
+            waitingHide();
+        });
+    }
+    function EditProductAll(id) {
+        waiting();
+        $.post("/Admin/EditProductAll/" + id, null, function (data) {
+            $("#editProductBody").html(data);
+            $("#editProudct").show();
+            waitingHide();
+        });
+    }
+    function GetProductNum() {
+        $.post("/Product/GetProductNum",null, function (data) {
+            $("#Number").val(data.msg);
+        }, "json");
+    }
+    function GetProductCategory() {
+        $.post("/Product/GetProductCategory", null, function (data) {
+            var temp = [];
+            for (var i = 0; i < data.length; i++) {
+                temp.push('<option value="'+data[i].ID+'">'+data[i].Name+'</option>');
+            }
+            $("#categoryList").html(temp.join(""));
+            $("#Category").html('<option value="">请选择</option>' + temp.join(""));
+        }, "json");
+    }
+    function GetTaste() {
+        $.post("/Product/GetTaste", null, function (data) {
+            var temp = [];
+            for (var i = 0; i < data.length; i++) {
+                temp.push('<option value="' + data[i].ID + '">' + data[i].Name + '</option>');
+            }
+            $("#TasteList").html(temp.join(""));
+            $("#Taste").html('<option value="">请选择</option>' + temp.join(""));
+        }, "json");
+    }
+    function EditCategory() {
+        $("#editCategory").show();
+    }
+    function saveProduct() {
+        var url = "/Admin/ProductSave";
+        var checkgg = false;
+        if (!isNaN($("#CategoryID").val())) {
+            url = "/Admin/ProductSaveAll";
+            checkgg = true;
+        };
+        waiting();
+        if (check(checkgg)) {
+            $.post(url, $("#editProductForm").serialize(), function (data) {
+                alert(data.msg)
+                if (data.code == "1") {
+                    search();
+                    $("#editProudct").hide();
+                }
+                waitingHide();
+            }, "json")
+        }
+    }
+    $(function () {
+        search();
+    });
+</script>
+<div>
+    <ol class="breadcrumb">
+        <li><a onclick="GetManager('Default')">首页</a></li>
+        <li><a href="#">商品管理</a></li>
+    </ol>
+    <div class="col-md-10 form-inline">
+        关键字：<input type="text" class="form-control" id="key" name="key">
+        @*商品分类：
+            <select id="Category" name="Category" class="form-control"></select>
+            口味：
+            <select id="Taste" name="Taste" class="form-control"></select>*@
+        状态：
+        <select class="form-control" id="Status" name="Status">
+            <option value="">请选择</option>
+            <option value="1">起售</option>
+            <option value="0">未起售</option>
+        </select>
+        <input type="button" class="btn btn-primary" value="查询" onclick="search()" />
+        <input type="button" class="btn btn-success" value="新增" onclick="EditProductAll()" />
+
+    </div>
+    @*<div class="col-lg-offset-1">
+            <input type="button" class="btn btn-warning" value="编辑分类" onclick="EditCategory()"/>
+            <input type="button" class="btn btn-warning" value="编辑口味" onclick="$('#editTaste').show()"/>
+        </div>*@
+
+    <div class="col-md-12" id="productlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>名称编号</th>
+                    <th>商品图片</th>
+                    <th>销售价</th>
+                    <th>总库存</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="productlistbody">
+                @*@Html.Action("PayList")*@
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack col-md-12" id="editProudct">
+    <div class="editProductBody col-md-10 col-md-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading">商品编辑<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="$('#editProudct').hide()" /></div>
+            <div class="panel-body">
+                <form id="editProductForm">
+                    <div id="editProductBody">
+
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer" style="overflow:hidden">
+                <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="saveProduct()" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="showBack col-md-12" id="editCategory">
+    <div class="editCategoryBody col-md-6 col-md-offset-3" style="margin-top:18%">
+        <div class="panel panel-primary">
+            <div class="panel-heading">分类编辑<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="$('#editCategory').hide()" /></div>
+            <div class="panel-body col-md-12">
+                <div class="">
+                    <span class="col-md-2" style="margin-top: 6px;">选择分类</span><div class="col-md-6"><select id="categoryList" class="form-control"></select></div><span class="btn btn-default col-md-3" onclick="pciedit()">编辑</span>
+                </div>
+                <div id="citemEdit" style="padding-top:50px;">
+                    <input type="hidden" id="cnameitemID" />
+                    <span class="col-md-2" style="margin-top: 6px;">分类名称</span><div class="col-md-6"><input id="cnameitem" class="form-control" /></div><input type="button" class="btn btn-danger col-md-2" value="更新" onclick="DoEditCategory(1)" />
+                    <input type="button" class="btn btn-success col-md-2" value="新增" onclick="DoEditCategory(0)" />
+                </div>
+            </div>
+            <div class="panel-footer" style="overflow:hidden">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="showBack col-md-12" id="editTaste">
+    <div class="editTasteBody col-md-6 col-md-offset-3" style="margin-top:18%">
+        <div class="panel panel-primary">
+            <div class="panel-heading">口味编辑<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="$('#editTaste').hide()" /></div>
+            <div class="panel-body col-md-12">
+                <div>
+                    <span class="col-md-2" style="margin-top: 6px;">选择分类</span><div class="col-md-6"><select id="TasteList" class="form-control"></select></div><span class="btn btn-default col-md-3" onclick="TasteListEdit()">编辑</span>
+                </div>
+                <div id="citemEdit" style="padding-top:50px;">
+                    <input type="hidden" id="TasteItemID" />
+                    <span class="col-md-2" style="margin-top: 6px;">分类名称</span><div class="col-md-6"><input id="TasteItemName" class="form-control" /></div><input type="button" class="btn btn-danger col-md-2" value="更新" onclick="DoEditTaste(1)" />
+                    <input type="button" class="btn btn-success col-md-2" value="新增" onclick="DoEditTaste(0)" />
+                </div>
+            </div>
+            <div class="panel-footer" style="overflow:hidden">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function pciedit() {
+        var cid = $("#categoryList").val();
+        var cname = $("#categoryList option:selected").text();
+        $("#cnameitemID").val(cid);
+        $("#cnameitem").val(cname);
+
+    }
+    function TasteListEdit() {
+        var cid = $("#TasteList").val();
+        var cname = $("#TasteList option:selected").text();
+        $("#TasteItemID").val(cid);
+        $("#TasteItemName").val(cname);
+
+    }
+    function DoEditCategory(type) {
+        var name = $("#cnameitem").val();
+        if (name == "") {
+            alert("类型不能为空");
+            return;
+        }
+        var param="name="+name;
+        if (type == 1) {
+            var id = $("#cnameitemID").val();
+            param += "&id=" + id;
+        }
+        $.post("/Product/EditCategory", param, function (data) {
+            alert(data.msg);
+            if (data.code == 1) {
+                GetProductCategory();
+            }
+        }, "json");
+    }
+    function DoEditTaste(type) {
+        var name = $("#TasteItemName").val();
+        if (name == "") {
+            alert("口味不能为空");
+            return;
+        }
+        var param = "name=" + name;
+        if (type == 1) {
+            var id = $("#TasteItemID").val();
+            param += "&id=" + id;
+        }
+        $.post("/Product/EditTaste", param, function (data) {
+            alert(data.msg);
+            if (data.code == 1) {
+                GetTaste();
+            }
+        }, "json");
+    }
+</script>
+<!-- END 富文本框 -->
+<script>
+
+
+        function showSpec() {
+            if ($("#hfSPValues").val().length < 1) {
+                return;
+            }
+            var table = "gvguige";
+            var specs = $("#hfSPValues").val().split('$$');
+            var html = "";
+            if (specs.length > 0) {
+                var spnames = specs[0].split('||')[1].split(',');
+                for (var i = spnames.length-1; i>=0; i--) {
+                    AddGuigeT('gvguige', spnames[i]);
+                }
+
+                for (var i = 0; i < specs.length; i++) {
+                    var b = specs[i].split('||');
+                    html += "<tr class='hidden-480'><td id='" + b[0] + "'><a class='icon-remove' title='删除行' href='javascript:void(0)' onclick=\"RemoveGuigeV(this)\"></a></td>";
+
+                    var c = b[2].split(',');
+                    for (var j = 0; j < c.length; j++) {
+                        {
+                            var d = $("#" + table + " tr:eq(0) td:eq(" + (j + 1) + ")").attr("c");
+                            html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + c[j] + "' /></td>";
+                        }
+                    }
+
+                    var d = $("#" + table + " tr:eq(0) td:eq(" + (c.length + 1) + ")").attr("c");
+                    html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + b[3] + "' /></td>";
+                    d = $("#" + table + " tr:eq(0) td:eq(" + (c.length + 2) + ")").attr("c");
+                    html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + b[4] + "' /></td>";
+                    d = $("#" + table + " tr:eq(0) td:eq(" + (c.length + 3) + ")").attr("c");
+                    html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + b[5] + "' /></td>";
+                    d = $("#" + table + " tr:eq(0) td:eq(" + (c.length + 4) + ")").attr("c");
+                    html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + b[6] + "' /></td>";
+                    d = $("#" + table + " tr:eq(0) td:eq(" + (c.length + 5) + ")").attr("c");
+                    html += "<td><input type='text' style='width:95%' class='" + d + "' value='" + b[7] + "' /></td>";
+                    html += "</tr>";
+                }
+                $('#gvguige').append(html);
+            }
+        }
+
+        function check(checkgg) {
+            if ($('#Name').val() == "") {
+                alert('商品名称不能为空');
+                return false;
+            }
+            if ($('#Title').val() == "") {
+                alert('商品标题不能为空');
+                return false;
+            }
+            if ($('#Number').val() == "") {
+                alert('商品编号不能为空');
+                return false;
+            }
+            if ($('#RealPrice').val() == "") {
+                alert('原价不能为空');
+                return false;
+            }
+            if ($('#Price').val() == "") {
+                alert('销售价不能为空');
+                return false;
+            }
+            if ($('#Stock').val() == "") {
+                alert('总库存不能为空');
+                return false;
+            }
+            if (checkgg) {
+                return SetSpecValue();
+            }
+            return true;
+        }
+
+        /* begin 多规格操作 */
+        function SetSpecValue() {
+            var result = false;
+            var table = 'gvguige';
+
+            if (($("#" + table + " tr:eq(0) td").length > 6 && $("#" + table + " tr").length < 2) ||
+                ($("#" + table + " tr:eq(0) td").length <= 6 && $("#" + table + " tr").length > 1)) {
+                alert('规格不正确！');
+                return result;
+            }
+
+            var a = $("#" + table + " tr:eq(0) td");
+            var spname = "";
+            for (var i = 1; i < a.length - 5; i++) {
+                var name = $("#" + table + " tr:eq(0) td:eq("+i+")").find('input');
+                spname += name.val() + ",";
+            }
+            spname = spname.substring(0, spname.length - 1);
+            var vals = "";
+            for (var i = 1; i < $("#" + table + " tr").length; i++) {
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(0)").attr("id") + "||";
+                vals += spname + "||";
+                var spdesc = "";
+                for (var j = 1; j < a.length - 5; j++) {
+                    spdesc += $("#" + table + " tr:eq(" + i + ") td:eq(" + j + ")").find('input').val() + ",";
+                }
+                spdesc = spdesc.substring(0, spdesc.length - 1);
+                vals += spdesc + "||";
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(" + ($("#" + table + " tr:eq(" + i + ") td").length - 5) + ")").find('input').val() + "||";
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(" + ($("#" + table + " tr:eq(" + i + ") td").length - 4) + ")").find('input').val() + "||";
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(" + ($("#" + table + " tr:eq(" + i + ") td").length - 3) + ")").find('input').val() + "||";
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(" + ($("#" + table + " tr:eq(" + i + ") td").length - 2) + ")").find('input').val() + "||";
+                vals += $("#" + table + " tr:eq(" + i + ") td:eq(" + ($("#" + table + " tr:eq(" + i + ") td").length - 1) + ")").find('input').val() + "$$";
+            }
+
+            $("#hfSPValues").val(vals);
+
+            return true;
+        }
+
+        function SetGgByBase(c) {
+            var name = $(c).parent().attr('c');
+            if (name == "txtNumber") {
+                var v = $('#' + name).val();
+                var index = 0;
+                $('.' + name).each(function () {
+                    $(this).val(v + "-" + index);
+                    index++;
+                });
+            } else {
+                var v = $('#' + name).val();
+                $('.' + name).each(function () {
+                    $(this).val(v);
+                });
+            }
+        }
+
+        function AddGuigeT(table, v) {
+            for (var i = 0; i < $("#" + table + " tr").length; i++) {
+                if (i == 0) {
+                    $("#" + table + " tr:eq(" + i + ") td:eq(0)").after("<td>规格类型<input type='text' style='width:90%' value='" + (v || "") + "'/><a class='icon-remove' title='删除列' href='javascript:void(0)' onclick=\"RemoveGuigeT('" + table + "',this)\"></a></td>");
+                }
+                else
+                    $("#" + table + " tr:eq(" + i + ") td:eq(0)").after("<td><input type='text' style='width:90%'/></td>");
+            }
+        }
+        function AddGuigeV(table) {
+            var t = $('#' + table);
+            var newrow = "<tr class='hidden-480'><td id='0'><a class='icon-remove' title='删除行' href='javascript:void(0)' onclick=\"RemoveGuigeV(this)\"></a></td>";
+            for (var i = 1; i < $("#" + table + " td").length / $("#" + table + " tr").length; i++) {
+                {
+                    var c = $("#" + table + " tr:eq(0) td:eq(" + i + ")").attr("c");
+                    newrow += "<td><input type='text' style='width:95%' class='" + c + "' /></td>";
+                }
+            }
+            newrow += "</tr>";
+            t.append(newrow);
+        }
+        function RemoveGuigeT(table, c) {
+            var colindex = $(c).parent()[0].cellIndex;
+            for (var i = 0; i < $("#" + table + " tr").length; i++) {
+                $("#" + table + " tr:eq(" + i + ") td:eq(" + colindex + ")").remove();
+            }
+        }
+        function RemoveGuigeV(c) {
+            $(c).parent().parent().remove();
+        }
+
+        /* end 多规格*/
+
+
+        function changeul(i) {
+            $('#li1').toggleClass('active');
+            $('#li2').toggleClass('active');
+            if (i == 1) {
+                $('#divmain').show();
+                $('#divlv').hide();
+            }
+            else {
+                $('#divmain').hide();
+                $('#divlv').show();
+            }
+        }
+
+        function getnum() {
+            $.ajax({
+                type: "GET",
+                url: 'getnumber.ashx',
+                async: true,
+                success: function (data) {
+                    $('#txtNumber').val(data);
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function showbig(url) {
+            $('.fancybox-image').attr("src", url);
+            $('#divShowBigImg').show();
+        }
+
+        function uploadSuccess(url) {
+            $("#divShowUpload").hide();
+            $('#divShowUpload').find('img').attr('src', 'img/noimg.png');
+            $('#hfImgList').val($('#hfImgList').val() + url + ";");
+            $('#divimglist').append(createImg(url));
+        }
+
+        function createImg(url) {
+
+            return "<div><span class='ilclose' onclick='ilremove(this)'></span><img src='"+url+"' class='upimglist'></div>";
+        }
+        function ilremove(e) {
+            $(e).parent().remove();
+        }
+        function delimg(t) {
+            $('div [durl="' + t + '"]').remove();
+            $('#hfImgList').val($('#hfImgList').val().replace(t + ";", ""));
+        }
+
+        function uploadImgs(file, showid, inputid) {
+            waiting();
+            var formData = new FormData();
+            formData.append("file", file.files[0]);
+
+            //$('#formupload').submit();
+            $.ajax({
+                type: "POST",
+                url: '/File/ImgUpload',
+                //url: $('#formupload').attr("action"),
+                //data: $('#formupload').serialize(),// 序列化表单值
+                data: formData,// 序列化表单值
+                async: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.code==1) {
+                        //uploadSuccess(data);
+                        $("#"+showid).attr("src", data.msg);
+                        $("#" + inputid).val(data.msg);
+                    }
+                    else {
+                        alert("上传失败！" + data);
+                    }
+                    waitingHide();
+                },
+                error: function () {
+                }
+            });
+        }
+        function uploadImgList(file) {
+            waiting();
+            var formData = new FormData();
+            formData.append("file", file.files[0]);
+
+            //$('#formupload').submit();
+            $.ajax({
+                type: "POST",
+                url: '/File/ImgUpload',
+                //url: $('#formupload').attr("action"),
+                //data: $('#formupload').serialize(),// 序列化表单值
+                data: formData,// 序列化表单值
+                async: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.code == 1) {
+                        //uploadSuccess(data);
+                        $("#divimglist").append(createImg(data.msg));
+                        $("#ImgList").val($("#ImgList").val() + data.msg + ";");
+                    }
+                    else {
+                        alert("上传失败！" + data);
+                    }
+                    waitingHide();
+                },
+                error: function () {
+                }
+            });
+        }
+        /*End 异步上传图片代码*/
+</script>

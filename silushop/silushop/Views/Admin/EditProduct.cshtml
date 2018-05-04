@@ -1,0 +1,141 @@
+﻿@model RelexBarDLL.ProductList
+<style>
+    #info .form-inline {
+        margin: 20px 0;
+    }
+</style>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script>
+    function InitDescrition() {
+        var editor = new wangEditor('Descrition');
+
+        editor.config.uploadImgUrl = '/File/ImgUpload2';
+        editor.create();
+
+        //生成多图片
+        //var imgs = $('#ImgList').val().split(';');
+        //var imghtml = "";
+        //for (var i = 0; i < imgs.length; i++) {
+        //    if (imgs[i].length > 0)
+        //        imghtml += createImg(imgs[i]);
+        //}
+        //$('#divimglist').html(imghtml);
+        //生成多图片
+
+        //生成特殊
+        //showSpec();
+    };
+    InitDescrition();
+</script>
+<div class="col-md-12">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a href="#info" data-toggle="tab">主信息</a></li>
+        @*<li><a href="#ggxh" data-toggle="tab">规格型号</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <!--主信息-->
+        <div class="tab-pane fade in active" id="info" style="overflow:auto;height:600px;">@Html.HiddenFor(m => m.ID)
+            @*<div class="form-inline">
+                <span class="col-md-2">商品类别：</span>@Html.DropDownListFor(m=>m.CategoryID, ViewData["clist"] as SelectList, new { @class = "form-control" })
+            </div>*@
+            <div class="form-inline">
+                <span class="col-md-2">商品名称：</span>@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">商品标题：</span>@Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            </div>
+            @*<div class="form-inline">
+                <span class="col-md-2">商品编号：</span>@Html.TextBoxFor(m => m.Number, new { @class = "form-control" })<a class="btn-link" onclick="GetProductNum()">获取商品编号</a>
+            </div>*@
+            <input type="hidden" value="1" id="PriceType" name="PriceType"/>
+            @*<div class="form-inline">
+                <span class="col-md-2">
+                    售价类型：
+                </span>@Html.DropDownListFor(m => m.PriceType, new List<SelectListItem> {
+                    new SelectListItem() {Value="1",Text="金额" },
+                    new SelectListItem() {Value="3",Text="货值" }
+                }, new { @class = "form-control" })
+            </div>*@
+            @*<div class="form-inline">
+                <span class="col-md-2">原价：</span>@Html.TextBoxFor(m => m.RealPrice, new { @class = "form-control" })
+            </div>*@
+            @*<div class="form-inline">
+                <span class="col-md-2">销售价：</span>@Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+            </div>*@
+            @*<div class="form-inline">
+                <span class="col-md-2">总库存：</span>@Html.TextBoxFor(m => m.Stock, new { @class = "form-control" })
+            </div>*@
+            <div class="form-inline">
+                <span class="col-md-2">
+                    商品首图：
+                </span>@Html.HiddenFor(m => m.Img)
+                <input style="display:none" type="file" id="headimgup" onchange="uploadImgs(this,'pimg','Img')" />
+                <img style="width:200px" src="@(Model==null||string.IsNullOrEmpty(Model.Img)?"/img/noimg.png":Model.Img)" onclick="$('#headimgup').click()" id="pimg" />
+            </div>
+            @*<div class="">
+                <span class="col-md-2">
+                    图片列表：
+                </span>
+                <input type="file" style="display:none" id="upimageList" onchange="uploadImgList(this)"/>
+                @Html.HiddenFor(m => m.ImgList)<input value="添加图片" type="button" id="btnAdd" class="btn btn-primary" onclick="$('#upimageList').click()" />
+                <div id="divimglist" class="col-md-offset-1"></div>
+            </div>*@
+            <div class="form-inline">
+                <div class="col-md-2">详细描述：</div>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.Descrition, new { TextMode = "MultiLine", Height = "200px",style="height:200px" })
+                </div>
+
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">销售价格：</span>@Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                <span style="color:red">对新购买用户生效</span>
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">每日收益：</span>@Html.TextBoxFor(m => m.DailySalary, new { @class = "form-control"})
+                <span style="color:red">对新购买用户生效</span>
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">商品排序：</span>@Html.TextBoxFor(m => m.OrderID, new { @class = "form-control" ,Value=Model==null?0:Model.OrderID})
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">商品等级：</span>@Html.TextBoxFor(m => m.Level, new { @class = "form-control", @readonly = "true" })
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">
+                    商品类型：
+                </span>@Html.DropDownListFor(m => m.Type, new List<SelectListItem> {
+                    new SelectListItem() {Value="0",Text="普通商品" },
+                    new SelectListItem() {Value="1",Text="购买可成为牙商" }
+                }, new { @class = "form-control",@readonly="true" })
+            </div>
+            <div class="form-inline">
+                <span class="col-md-2">状态：</span>
+                @Html.DropDownListFor(m=>m.Status,new List<SelectListItem>() {
+                        new SelectListItem() {Value="1",Text="可用" }
+                        ,new SelectListItem() {Value="0",Text="不可用" }
+                }, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="tab-pane fade" id="ggxh">
+            <div class="form-inline">
+                <a href="javascript:void(0)" onclick="AddGuigeT('gvguige')" class="btn btn-primary">新增规格类型<i class="icon-plus"></i></a>
+                <a href="javascript:void(0)" onclick="AddGuigeV('gvguige')" class="btn btn-primary">新增规格值<i class="icon-plus"></i></a>
+            </div>
+            <table class="table table-striped table-bordered table-hover" id="gvguige"
+                   style="border-collapse: collapse; width: 100%" border="1" rules="all" cellspacing="0">
+                <tbody>
+                    <tr class="hidden-480">
+                        <td>&nbsp;</td>
+                        <td c="txtNumber">编号<a class="icon-collapse" href="javascript:void()" onclick="SetGgByBase(this)" /> </td>
+                        <td c="txtRealPrice">原价<a class="icon-collapse" href="javascript:void()" onclick="SetGgByBase(this)" /> </td>
+                        <td c="txtPrice">销售价<a class="icon-collapse" href="javascript:void()" onclick="SetGgByBase(this)" /> </td>
+                        <td c="txtStock">库存<a class="icon-collapse" href="javascript:void()" onclick="SetGgByBase(this)" /> </td>
+                        <td c="txtRemark">备注<a class="icon-collapse" href="javascript:void()" onclick="SetGgByBase(this)" /> </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

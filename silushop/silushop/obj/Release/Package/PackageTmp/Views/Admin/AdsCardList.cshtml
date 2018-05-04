@@ -1,0 +1,21 @@
+﻿@model List<RelexBarDLL.AdsList>
+
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Name</td>
+        <td>@Model[i].Title</td>
+        <td><img width="100" src="@Model[i].Img" /></td>
+        <td>@Model[i].LinkTo</td>
+        <td>@Model[i].toLocation()</td>
+        <td>@Model[i].Descrition</td>
+        <td>
+            <input type="button" class="btn btn-danger" value="@((Model[i].Status==1)?"启用":"禁用")" onclick="CStatus('@Model[i].ID',this)" />
+        </td>
+        <td>@Model[i].BeginTime.Value.ToString("yyyy-MM-dd")</td>
+        <td>@Model[i].EndTime.Value.ToString("yyyy-MM-dd")</td>
+        <td><input type="button" value="修改" onclick="EditAds('@Model[i].ID')" class="btn btn-default" />
+            <input type="button" value="删除" onclick="DeleteAds('@Model[i].ID')" class="btn btn-danger" /></td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

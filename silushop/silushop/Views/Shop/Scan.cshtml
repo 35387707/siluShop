@@ -1,0 +1,207 @@
+﻿<style>
+    .inputPrice>.col-sm-4>input{height:100%;font-size:4rem;}
+    .inputPrice>.col-sm-4{
+        margin-top:1rem;
+        height:8rem;
+    }
+    .tab-content>div{margin-top:1rem;}
+</style>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script>
+    var Scan = {};
+    Scan.sDate = new Date();
+    Scan.hasFooter = false;
+    Scan.createFooter=function(sum) {
+        if (!Scan.hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                currPage: 1,
+                backFn: function (p) {
+                    GetUserList(p);
+                }
+            });
+            Scan.hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        Scan.getBill(index);
+    };
+    Scan.getBill=function(index){
+        Scan.index = index;
+        $.post("/Shop/Bill", "date=" + Scan.sDate + "&from=6&index=" + index, function (data) {
+            if (!Scan.hasFooter) {
+                Scan.createFooter(data.sum);
+            }
+            var temp = [];
+            for (var i = 0; i < data.data.length; i++) {
+                var item = data.data[i];
+                var date = eval('new ' + eval(item.CreateTime).source);
+                temp.push('<tr><td>' + toString(date) + '</td><td>' + item.Val + '</td><td>' + item.Remark + '</td></tr>');
+                
+            }
+            $("#dzbody").html(temp.join(""));
+        }, "json");
+    }
+    function toString(date){
+        return date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+    }
+    function check() {
+        var money = $('#txtMoney').val();
+        var scan = $('#txtScan').val();
+        if (money == "") {
+            alert('金额不能为空！');
+            return false;
+        }
+        if (scan == "") {
+            return false;
+        }
+        var q = parseFloat(money);
+        if (isNaN(q)) {
+            alert('金额不正确！');
+            return false;
+        }
+        return true;
+    }
+
+    function playSound() {
+        var audio = document.getElementById("audioPlay");
+        //浏览器支持 audion
+        audio.play();
+    }
+    function getKey(event) {
+        var event = event || window.event;
+        if (event.keyCode == 13) {
+            getNewPay();
+        }
+    }
+    function getNewPay() {
+        if (!check()) {
+            return;
+        }
+        var money = $("#txtMoney").val();
+        var scan = $("#txtScan").val();
+        
+        
+        $("#txtScan").val("");
+        $.post("/Shop/DoScan", "data=" + scan + "&money=" + money+"&inout=1", function (data) {
+            if (data.code == 1) {
+                $("#txtMoney").val("");
+                playSound();
+                alert("支付成功！");
+            } else {
+                alert("支付失败：" + data.msg);
+            }
+        }, "json");
+
+    }
+    $(function () {
+        $(".inputPrice .num").on("click", function () {
+            var v = $(this).val();
+            var r = $('#txtMoney').val();
+            if (r.indexOf('.') > 0 && v == ".") {//已经有小数点
+                return;
+            }
+            if (r.length == 0 && v == ".") {//已经有小数点
+                return;
+            }
+            var vtempr=r.split(".");
+            if ( vtempr.length> 1&&vtempr[1].length==2) {//只保留两位小数
+                return;
+            }
+            $('#txtMoney').val(r + v);
+            
+        });
+        $(".del").on("click", function () {
+            var r = $('#txtMoney').val();
+            $('#txtMoney').val(r.substring(0, r.length - 1));
+        });
+        Scan.getBill(1);
+    })
+    
+</script>
+<audio src="/img/bg.mp3" hidden="hidden" id='audioPlay'></audio>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">收银</a></li>
+</ol>
+<div class="col-md-12">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a href="#scan" data-toggle="tab">扫码</a></li>
+        <li><a href="#dz" data-toggle="tab">对账</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="scan">
+            <div class="col-sm-5">
+                <img src="/img/user/bg.jpg" id="skcode" class="img-responsive" />
+                <input type="button" class="form-control btn btn-primary scan col-sm-2" onclick="$('#txtScan').focus();" value="扫码" />
+                <input id="txtScan" onkeyup="getKey(event)" class="form-control focus" style="opacity:0" />
+            </div>
+            <div class="col-sm-7">
+                <div class="input-group">
+                    <input type="text" ID="txtMoney" class="form-control" />
+                    <div class="input-group-addon">积分</div>
+                </div>
+                <div class="inputPrice">
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="1" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="2" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="3" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="4" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="5" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="6" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="7" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="8" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="9" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="0" />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block num" value="." />
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-block del" value=""
+                               style="background-image: url(/img/user/del.png); background-repeat: no-repeat; background-position: center center;   background-size: 40%;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="dz">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>金额</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="dzbody">
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination"></ul>
+            </nav>
+        </div>
+    </div>
+    <div class="">
+        
+    </div>
+</div>

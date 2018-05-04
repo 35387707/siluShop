@@ -1,0 +1,9 @@
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\RelexBarDLL.dll.config
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\RelexBarDLL.dll
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\RelexBarDLL.pdb
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\EntityFramework.dll
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\EntityFramework.xml
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\bin\Release\zh-Hans\EntityFramework.resources.dll
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\obj\Release\RelexBarDLL.dll
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\obj\Release\RelexBarDLL.pdb
+D:\翰德公司相关\Projects\silushop2\silushop\RelexBarDLL\obj\Release\RelexBarDLL.csprojResolveAssemblyReference.cache

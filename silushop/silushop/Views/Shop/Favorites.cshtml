@@ -1,0 +1,95 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>Favorites</title>
+    <script>
+        var Fav = {};
+        function Pdetail(id) {
+            location.href = "/Shop/ProductDetail/"+id;
+        }
+        function GetFavList(index) {
+            Fav.index = index;
+            $.post("/Shop/GetFavList","index="+index, function (data) {
+                if (data.length > 0) {
+                    syncStatus = 1;
+                    var html = [];
+                    for (var i = 0; i < data.length; i++) {
+                        html.push('<li><div class="favorites_pic"><a href="/Shop/ProductDetail/'+data[i].PID+'" title=""><img src="' + data[i].Img + '" alt=""></a></div><div class="favorites_info">'
+                            + '<h4><a href="/Shop/ProductDetail/' + data[i].PID + '" title="">' + data[i].Name + '</a></h4><div class="favorites_info_b"><span>￥' + data[i].Price + '</span><a onclick="DelFav(\''+data[i].PID+'\',this)" title="">取消收藏</a></div></div></li>');
+                    }
+                    $("#list").append(html.join(""));
+                }
+            });
+        }
+        $(function () {
+            GetFavList(1);
+            syncTopStatus = 1;
+            syncStatus = 1;
+            $("body").on("touchstart", function (e) {
+                // e.preventDefault();
+                startX = e.originalEvent.changedTouches[0].pageX;
+                startY = e.originalEvent.changedTouches[0].pageY;
+
+            });
+            $("body").on("touchmove", function (e) {
+                endX = e.originalEvent.changedTouches[0].pageX;
+                endY = e.originalEvent.changedTouches[0].pageY;
+                var y = endY - startY;
+                if (Math.abs(y) > 100) {
+
+                    var $list = $(".favorites");
+                    var oldheight = $list[0].scrollHeight;
+                    if (y > 0) {
+                        if (syncTopStatus == 1 && $list[0].scrollTop == 0) {
+                            syncTopStatus = 0;
+                        }
+                        //alert("向下");
+                    } else {
+                        if (syncStatus == 1) {
+                            syncStatus = 0;
+                            GetFavList(++Fav.index);
+
+                        }
+                        //alert("向上");
+                    }
+                }
+
+            });
+        });
+        function DelFav(id, e) {
+            if (!confirm("是否取消收藏？")) {
+                return;
+            }
+            $.post("/Shop/DelFavorites", "PID="+id, function (data) {
+                if (data.code == 1) {
+                    $(e).parents("li").remove();
+                } else {
+                    alert(data.msg);
+                }
+            }, "json");
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>我的收藏</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="favorites" id="list">
+        <ul>
+           
+        </ul>
+    </div>
+    <div class="footnavbox"></div>
+    <div class="footnav">
+        @Html.Action("ShopFooter", "Static", new { id = 4 })
+    </div>
+</body>
+</html>

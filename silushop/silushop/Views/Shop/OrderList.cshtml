@@ -1,0 +1,282 @@
+﻿
+@{
+    Layout = null;
+}
+@model int?
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>我的订单</title>
+    <style>
+        .qrsh,.ysh,.pj{
+            display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0 0.5rem;
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+        border-radius: 3px;
+        position: absolute;
+        right: 1rem;
+        }
+        .qrsh,.pj{
+            border: 1px solid #ff6600;
+        color: #ff6600;
+        }
+        .ysh{}
+    </style>
+    <style>
+        .showmodel{width:100%;height:100%;position:fixed;background-color:rgba(185,185,185,.5);top:0;z-index:9999;display:none;}
+        .modelbody{width:80%;background-color:white;    margin: 65% auto;height: 16rem;border-radius: 1.5rem;padding: 1.5rem;    position: relative;}
+        .modelbody-head{border-bottom:1px solid #808080;}
+        .modelbody-title{font-size:2rem;}
+        .modelbody-close{
+                float: right;
+    display: inline-block;
+    border: 1px solid;
+    padding: .2rem .8rem;
+    font-size: 1.5rem;
+    position: absolute;
+    right: 1rem;
+    top: .5rem;
+    border-radius: .5rem;
+        }
+    .pjfb{font-size:1.5rem;float: right;    color: #ff6600;background-color:white;
+          border: 1px solid !important;padding: .2rem .8rem !important;border-radius: .5rem;}
+    .cartlist_thumb img{height:6rem;}
+    </style>
+    <link href="~/css/Star.css" rel="stylesheet" />
+    <script>
+        var OrderManager = {};
+        OrderManager.Status='@Model';
+        var nomore=false;
+      
+        function GetOrderList(index) {
+            if(nomore)
+                return;
+            OrderManager.index = index;
+            $("#orderlist").append("<dl class='nochoose' id='dlDownload'><dt>正在努力加载中……</dt></dl>");
+            $.post("/Shop/OrderListItem", "index=" + index + "&status="+OrderManager.Status, function (data) {
+                if (data.Order.length == 0) {
+                    $('#dlDownload').remove();
+                    nomore=true;
+                    $("#orderlist").append("<dl class='nochoose' id='dlDownload'><dt>亲，看完了…… </dt></dl>");
+                    return;
+                }
+                var orderlist = data.Order;
+                var opl = data.OrderList;
+                for (var i = 0; i < orderlist.length; i++) {
+                    orderlist[i].Item = [];
+                    for (var j = 0; j < opl.length; j++) {
+                        if (orderlist[i].ID == opl[j].OrderID) {
+                            orderlist[i].Item.push(opl[j]);
+                        }
+                    }
+                }
+                var temphtml = [];
+                for (var i = 0; i < orderlist.length; i++) {
+                    temphtml.push('<dl class="nochoose"><dt><div><i class="icon-shop"></i>' + orderlist[i].Number + '</div><i class="icon-chevron-thin-left"></i></dt>');
+                     for (var j = 0; j < orderlist[i].Item.length; j++) {
+                         temphtml.push('<dd id="'+orderlist[i].Item[j].ID+'"><div class="cartlist_pic"><a href="/Shop/ProductDetail/'+orderlist[i].Item[j].ProductID+'" title="" class="cartlist_thumb"><img src="' + orderlist[i].Item[j].Img + '" alt=""></a></div><div class="cartlist_info">');
+                         temphtml.push('<h4><a href="#" title="">' + orderlist[i].Item[j].Name + '</a></h4><h5>￥<strong>'+orderlist[i].Item[j].Price+'</strong></h5><span class="sevenday"></span><span class="cartlist_number">×' + orderlist[i].Item[j].Count + '</span>'+getSHButton(orderlist[i].Item[j])+'</div></dd>');
+                     }
+                     temphtml.push('<dd><div class="cartlist_sum">共' + orderlist[i].Item.length + '件商品 合计：<strong>￥' + orderlist[i].Price + '</strong>（含运费￥0.00）</div></dd>');
+                     temphtml.push('<dd><div class="cartlist_sum">收货地址：' + orderlist[i].RecAddress + '<br/>联系人：' + orderlist[i].RecName + ',电话：' + orderlist[i].RecPhone + '</div></dd>');
+
+                    //temphtml.push('<dd><div class="cartlist_btn"><a href="#" title="">延长收货</a><a href="#" title="">查看物流</a><a href="#" title="" class="active">确认收货</a></div></dd>');
+                     temphtml.push(getButton(orderlist[i].ID,orderlist[i].Status));
+                    temphtml.push('</dl>');
+                }
+                $('#dlDownload').remove();
+
+                if(index==1){
+                    $("#orderlist").html(temphtml.join(""));
+                }else{
+                    $("#orderlist").append(temphtml.join(""));
+                }
+               // console.log(orderlist);
+                syncStatus = 1;
+            }, "json")
+        }
+        function RecOrder(id, e) {
+            $.post("/Product/RecOrder", "id=" + id, function (data) {
+                if (data.code == 1) {
+                    $(e).parent().append("<span class='ysh'>已收货</span>");
+                    $(e).remove();
+                    
+                } else {
+                    alert(data.msg);
+                }
+            });
+        
+        }
+        function getSHButton(item){
+            switch (item.Status) {
+                case 1:
+                    return '<span class="ysh">待发货</span>';
+                case 2:
+                    return '<span class="qrsh" onclick="RecOrder(\''+item.ID+'\',this)">确认收货</span>';
+                case 3:
+                    return '<span class="ysh">已收货</span>';
+                case 4:
+                    if(item.Score==null){
+                        return '<span class="pj" onclick="pfshow(\''+item.ID+'\')">评价</span>';
+                    }
+                    break;
+                default:
+        
+            }
+            return "";
+        }
+        function getButton(id,s){
+            switch (s) {
+                case -1:
+                    return '<dd><div class="cartlist_btn"><a title="" class="">已取消</a></div></dd>';
+                case 0:
+                    return '<dd><div class="cartlist_btn"><a onclick="CancelOrder(\''+id+'\',this)" class="active">取消订单</a><a href="/Shop/OrderConfirm/'+id+'" title="" class="active">去付款</a></div></dd>';
+                default:
+        
+            }
+        }
+        function CancelOrder(id,e){
+            if(!confirm("确认取消订单？")){
+                return;
+            }
+            $.post("/Shop/CancelOrder/"+id,null,function(data){
+                if(data.code==1){
+                    $(e).parent().html('<a title="" class="">已取消</a>');    
+                }else{
+                    alert(data.msg);
+                }
+            },"json");
+            
+        }
+        $(function () {
+            $(".clearfix li").on("click",function(){
+                OrderManager.Status= $(this).attr("data-s");
+                $(".clearfix li").removeClass("active");
+                $(this).addClass("active");
+                GetOrderList(1);
+            });
+            GetOrderList(1);
+            init();
+            syncTopStatus = 1;
+            syncStatus = 1;
+            $("body").on("touchstart", function (e) {
+                // e.preventDefault();
+                startX = e.originalEvent.changedTouches[0].pageX;
+                startY = e.originalEvent.changedTouches[0].pageY;
+
+            });
+            $("body").on("touchmove", function (e) {
+                endX = e.originalEvent.changedTouches[0].pageX;
+                endY = e.originalEvent.changedTouches[0].pageY;
+                var y = endY - startY;
+            
+                if (Math.abs(y) > 100) {
+
+                    if (y > 0) {
+                        //if (syncTopStatus == 1 && list[0].scrollTop == 0) {
+                        if (syncTopStatus == 1) {
+                            syncTopStatus = 0;
+                        }
+                        //alert("向下");
+                    } else {
+                        //console.log($list.scrollTop() +"+"+ window.innerHeight +">="+ $list[0].scrollHeight);
+                        if (syncStatus == 1) {
+                            syncStatus = 0;
+                            GetOrderList(++OrderManager.index);
+
+                        }
+                        //alert("向上");
+                    }
+                }
+
+            });
+        });
+        function init() {
+            switch (@(Model==null?-100:Model.Value)) {
+                case 0:
+                    $(".clearfix li").eq(1).addClass("active");
+                    break;
+                case 1:
+                    $(".clearfix li").eq(2).addClass("active");
+                    break;
+                case 2:
+                    $(".clearfix li").eq(3).addClass("active");
+                    break;
+                case 4:
+                    $(".clearfix li").eq(4).addClass("active");
+                    break;
+                default:
+                    $(".clearfix li").eq(0).addClass("active");
+                    break;
+            }
+        }
+    </script>
+    <script>
+        function pfclose() {
+            $("#plid").val("");
+            $("#comment").val("");
+            $(".showmodel").hide();
+
+        }
+        function pfshow(id) {
+            fnShow(1);
+            $("#plid").val(id);
+            $(".showmodel").show();
+        }
+        function fbpl() {
+            var id = $("#plid").val();
+            var comment = $("#comment").val();
+            $.post("/Shop/OrderComment/" + id, "score="+starnum+"&comment="+comment, function (data) {
+                alert(data.msg)
+                if (data.code == 1) {
+                    $("#" + id).find(".pj").remove();
+                    //$(this).remove();
+                    pfclose();
+                }
+            }, "json");
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>我的订单</h3>
+        <a href="/Shop/PersonCenter" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="carttopnav">
+        <ul class="clearfix">
+            <li data-s=""><a href="/Shop/OrderList/">全部</a></li>
+            <li data-s="0"><a href="/Shop/OrderList/0">待付款</a></li>
+            <li data-s="1"><a href="/Shop/OrderList/1">待发货</a></li>
+            <li data-s="2"><a href="/Shop/OrderList/2">待收货</a></li>
+            <li data-s="4"><a href="/Shop/OrderList/4">待评价</a></li>
+        </ul>
+    </div>
+    <div class="cartlist" id="orderlist">
+    </div>
+    <div class="showmodel">
+        <div class="modelbody">
+            <div class="modelbody-head"><span class="modelbody-title">发表评价</span><span class="modelbody-close" onclick="pfclose()">关闭</span></div>
+            <div>
+                <input type="hidden" id="plid" />
+                <div style="float: left;font-size: 2rem;padding-top: .4rem;">评分：</div>
+                <div>
+                    <ul class="starul">
+                        <li class="light"><a href="javascript:;">1</a></li>
+                        <li><a href="javascript:;">2</a></li>
+                        <li><a href="javascript:;">3</a></li>
+                        <li><a href="javascript:;">4</a></li>
+                        <li><a href="javascript:;">5</a></li>
+                    </ul>
+                </div>
+            </div>
+            <textarea placeholder="发表评价" id="comment" style="width: 100%;font-size: 1.5rem;height: 6rem;padding-top: 1rem;border:none"></textarea>
+            <input type="button" value="发表" onclick="fbpl()" class="pjfb" />
+        </div>
+    </div>
+    <script src="~/js/Star.js"></script>
+</body>
+</html>

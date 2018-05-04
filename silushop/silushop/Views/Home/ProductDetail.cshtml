@@ -1,0 +1,52 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.ProductList
+@*@{ 
+    string[] imglist = null;
+    if (!string.IsNullOrEmpty(Model.ImgList)) {
+       imglist=Model.ImgList.Split(';');
+    }
+}*@
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>商品详情</title>
+    <script>
+        function buy(id) {
+            //$.post("/Home/Buy/" + id, null, function (data) {
+            //        alert(data.msg);
+            //}, "json");
+
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>商品详情</h3>
+        <a onclick="window.history.back()"  title=""><i class="icon-chevron-thin-left"></i></a>
+        <a href="#" title="">@*<i class="icon-external-link"></i>*@</a>
+    </div>
+    <div class="product_content">
+        @Html.Raw(Model.Descrition)
+        @*@if (imglist != null && imglist.Length > 0)
+        {
+            for (int i = 0; i < imglist.Length; i++)
+            {
+                <p><img src="@imglist[i]" alt=""></p>
+            }
+        }*@
+        <p><img src="/img/lb2.jpg" alt=""></p>
+    </div>
+    <div class="productfootbox2"></div>
+    <div class="productfoot2">
+        <ul class="clearfix">
+            <li><span>&nbsp;@Model.Price 提货券</span></li>
+            <li><a href="/Home/OrderConfirm/@Model.ID" title="">我要提货</a></li>
+        </ul>
+    </div>
+</body>
+</html>

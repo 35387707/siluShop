@@ -1,0 +1,35 @@
+﻿@model List<RelexBarBLL.Models.OrderListModel>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Number</td>
+        <td>@Model[i].CreateTime</td>
+        <td class="order_status">@Model[i].toOrderStatus()</td>
+        <td>@Model[i].Price</td>
+        <td>@Model[i].TotalPrice</td>
+        <td>@Model[i].Name</td>
+        <td>
+            <img width="100px" src="@Model[i].Img" />
+        </td>
+        @*<td>@Model[i].CateName</td>*@
+        <td>@Model[i].toOrderType()</td>
+        <td>@Model[i].Count</td>
+        <td>
+            姓名：@Model[i].RecName<br />
+            联系电话：@Model[i].RecPhone<br />
+            详细地址：@Model[i].RecAddress
+        </td>
+        <td>
+                @if (Model[i].Status == 1)
+                {//已付款
+                    <input type="button" class="btn btn-danger" value="已发货" onclick="orderSend('@Model[i].OPID', this)" />
+                }
+                @if (Model[i].Status == 0)
+                {
+                    <input type="button" class="btn btn-danger" value="取消订单" onclick="CancelOrder('@Model[i].ID',this)" />
+                }
+            
+        </td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

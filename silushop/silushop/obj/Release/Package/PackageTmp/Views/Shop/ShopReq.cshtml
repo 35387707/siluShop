@@ -1,0 +1,186 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>商家入驻申请</title>
+    <style>
+        .head_img{width:6rem;height:6rem;float:right;background-repeat:no-repeat;background-size:cover;background-color:#ebebeb;border-radius:.5rem;background-image:url("/img/defaulthead.jpg");}
+        .shop_bac,.shop_zz{height:13rem;width:100%;background-repeat:no-repeat;background-size:cover;background-color:#ebebeb;border-radius:.5rem;color:#666;text-align:center;line-height:13rem;}
+        .idcard{width: 10rem;height: 7rem;background-color:#ebebeb;float:left;margin-left:1rem;text-align:center;line-height:7rem;color:#666;border-radius:.5rem;background-repeat:no-repeat;background-size:cover;}
+        .add_select{width: 22rem;float: right;}
+        .add_select select{border:none;outline-style:none;}
+    </style>
+    <script>
+        function HeadImgUpload(id,file) {
+            var data = new FormData();
+            data.append("file", file.files[0], file.files[0].name);
+            $.ajax({
+                url: "/File/UserHeadUpload",
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (respdata) {
+                    if (respdata.code == '1') {
+                        $("#" + id).val(respdata.msg);
+                        $("." + id).css("background-image", "url(" + respdata.msg + ")");
+                    } else {
+                        alert(respdata.msg);
+                    }
+                },
+                error: function (data) {
+                    alert("错误");
+                }
+            });
+
+        }
+        $(function () {
+            GetAdd(1, "sheng");
+            $("#sub").on("click", function () {
+                $(this).attr("disabled",true);
+                var headimg = $("#head_img").val();
+                if (IsNullOrEmpty(headimg)) { $(this).attr("disabled", false); return alert("头像不能为空"); }
+                var shop_bac = $("#shop_bac").val();
+                if (IsNullOrEmpty(shop_bac)) { $(this).attr("disabled", false); return alert("背景图片未上传"); }
+                var shop_name = $("#shop_name").val();
+                if (IsNullOrEmpty(shop_name)) { $(this).attr("disabled", false); return alert("商家名称不能为空"); }
+                var idcl = $("#idcard_l").val();
+                if (IsNullOrEmpty(idcl)) { $(this).attr("disabled", false); return alert("身份证正面照未上传"); }
+                var idcr = $("#idcard_r").val();
+                if (IsNullOrEmpty(idcr)) { $(this).attr("disabled", false); return alert("身份证反面照未上传"); }
+                var shop_zz = $("#shop_zz").val();
+                if (IsNullOrEmpty(shop_zz)) { $(this).attr("disabled", false); return alert("营业执照图片未上传"); }
+
+                var add = $("#addxq").val();
+                if (IsNullOrEmpty(add)) { $(this).attr("disabled", false); return alert("地址未填写完整"); }
+                var befor = $("#sheng").find("option:selected").text() + $("#addcity").find("option:selected").text() + $("#addxq").find("option:selected").text();
+                var Address =befor+","+ $("#Address").val();
+                if (IsNullOrEmpty(Address)) { $(this).attr("disabled", false); return alert("请填写详细地址"); }
+                var param = { HeadImg: headimg, ShopName: shop_name, IDcard_img: idcl, IDcard_img2: idcr, BackImg: shop_bac, BLImg: shop_zz,AreaID:add,Address:Address };
+                
+                console.log(param);
+                $.post("/Shop/DoShopReq", param, function (data) {
+                    alert(data.msg);
+                    if (data.code != 1) {
+                        $(this).attr("disabled", false);
+                    }
+                }, "json");
+
+            });
+        });
+        function IsNullOrEmpty(str) {
+            if (str == null || str == "" || str.length == 0) {
+                return true;
+            }
+            return false;
+        }
+        function GetAdd(fid, did) {
+
+            $.post("/Area/GetAreas", "fid=" + fid, function (data) {
+                var area = [];
+                for (var i = 0; i < data.length; i++) {
+                    area.push("<option value='" + data[i].ID + "'>" + data[i].Name + "</option>");
+                }
+                $("#" + did).html(area.join(""));
+                $("#" + did).change();
+            }, "json")
+        }
+        function ImgUpload(id, file) {
+            var data = new FormData();
+            data.append("file", file.files[0], file.files[0].name);
+            $.ajax({
+                url: "/File/ImgUpload",
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (respdata) {
+                    if (respdata.code == '1') {
+                        $("#" + id).val(respdata.msg);
+                        $("." + id).text("");
+                        $("." + id).css("background-image", "url(" + respdata.msg + ")");
+                    } else {
+                        alert(respdata.msg);
+                    }
+                },
+                error: function (data) {
+                    alert("错误");
+                }
+            });
+
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>商家入驻申请</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+
+    <div class="account">
+        
+        <ul>
+            <li>
+                <div class="account_left">头像：</div>
+                <div class="account_right"><div class="account_password"><input id="head_img" type="hidden" value="/img/defaulthead.jpg"/>
+                    <input type="file" style="display:none" id="head_up" onchange="HeadImgUpload('head_img',this)"/>
+                    <div class="head_img" onclick="$('#head_up').click()"></div>
+                    </div></div>
+            </li>
+            <li>
+                <div class="account_left">背景图：</div>
+                <div class="account_right"><div class="account_password"><input type="hidden" id="shop_bac"/>
+                     <input type="file" style="display:none" id="shop_bacup" onchange="ImgUpload('shop_bac', this)" />
+                    <div  class="shop_bac" onclick="$('#shop_bacup').click()">点击上传图片</div>
+                  </div></div>
+            </li>
+            <li>
+                <div class="account_left">商家名称：</div>
+                <div class="account_right"><div class="account_password"><input type="text" id="shop_name" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">地址：</div>
+                <div class="account_right"><div class="account_password">
+                    <div class="add_select">
+                        <select class="addressadd_txt" id="sheng" onchange="GetAdd($(this).val(), 'addcity')"><option value="">请选择</option></select>
+                        <select id="addcity" class="addressadd_txt" onchange="GetAdd($(this).val(), 'addxq')"><option value="">请选择</option></select>
+                        <select class="addressadd_txt" id="addxq"><option value="">请选择</option></select>
+                    </div>
+                    
+                    </div></div>
+            </li>
+            <li>
+                <div class="account_left">详细地址：</div>
+                <div class="account_right"><div class="account_password"><input type="text" id="Address" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">身份证：</div>
+                <div class="account_right"><div class="account_password"><input type="hidden" />
+                     <input type="hidden" id="idcard_l"/><input type="hidden" id="idcard_r" />
+                    <input type="file" id="idcl" style="display:none" onchange="ImgUpload('idcard_l', this)" />
+                    <input type="file" id="idcr" style="display:none" onchange="ImgUpload('idcard_r', this)" />
+                    <div class="idcard idcard_l" onclick="$('#idcl').click()">正面</div><div class="idcard idcard_r" onclick="$('#idcr').click()">反面</div>
+                    </div></div>
+            </li>
+            <li>
+                <div class="account_left">营业执照：</div>
+                <div class="account_right"><div class="account_password"><input type="hidden" id="shop_zz"/>
+                    <input type="file" style="display:none" id="shop_zzup" onchange="ImgUpload('shop_zz', this)" />
+                    <div class="shop_zz" onclick="$('#shop_zzup').click()">点击上传图片</div>
+                    </div></div>
+            </li>
+        </ul>
+    </div>
+    <div class="btn1"><input type="button" id="sub" value="确认" /></div>
+    <div class="footnavbox"></div>
+    <div class="footnav">
+       @Html.Action("ShopFooter", "Static", new { id = 4 })
+    </div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.Shop
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>ShopHome</title>
+    <script>
+        var Product = {};
+        Product.orderby = 0;
+        Product.key = "";
+        function GetProductList(index) {
+            Product.index = index;
+            $.post("/Shop/MobileProductList", "index=" + index + "&ShopID=@Model.ID" + "&OrderType=" + Product.orderby + "&key=" + Product.key, function (data) {
+                if (index == 1) {
+                    $("#ProductList").html("");
+                }
+                if (data.length != 0) {
+                    syncStatus = 1;
+                    var temp = [];
+
+                    for (var i = 0; i < data.length; i++) {
+                        temp.push('<li><a href="/Shop/ProductDetail/' + data[i].ID + '" title=""><div class="porduct_list_pic"><img src="' + data[i].Img + '" alt=""></div><h4>' + data[i].Name + '</h4><div class="price clearfix"><span>￥' + data[i].Price + '</span><b>' + data[i].RealPrice + '易物券</b></div></a></li>');
+                    }
+                    $("#ProductList").append(temp.join(""));
+                  
+                    console.log(data);
+                }
+            }, "json")
+        }
+        $(function () {
+            $("#search").on("click", function () {
+                var key = $("#key").val();
+                Product.key = key;
+                GetProductList(1);
+            });
+            GetProductList(1);
+
+            syncTopStatus = 1;
+            syncStatus = 1;
+            $("body").on("touchstart", function (e) {
+                // e.preventDefault();
+                startX = e.originalEvent.changedTouches[0].pageX;
+                startY = e.originalEvent.changedTouches[0].pageY;
+
+            });
+            $("body").on("touchmove", function (e) {
+                endX = e.originalEvent.changedTouches[0].pageX;
+                endY = e.originalEvent.changedTouches[0].pageY;
+                var y = endY - startY;
+                if (Math.abs(y) > 100) {
+                    if (y > 0) {
+                        
+                        //alert("向下");
+                    } else {
+                        if (syncStatus == 1) {
+                            syncStatus = 0;
+                            GetProductList(++Product.index);
+
+                        }
+                        //alert("向上");
+                    }
+                }
+
+            });
+            $("#orderby li").on("click", function () {
+                var hasActive = $(this).hasClass("active");
+                $("#orderby li").removeClass("active");
+                $(this).addClass("active");
+                var orderby = parseInt($(this).attr("data-v"));
+                var $span = $(this).find("span");
+                var updown = $span.attr("class");
+                $span.removeClass(updown);
+                
+                if (orderby >= 0) {
+                    Product.orderby = orderby;
+                } else {
+                    if (hasActive) {
+                        console.log(updown);
+                        if (updown == "up") {
+                            $span.addClass("down");
+                            orderby == -1 ? Product.orderby = 4 : Product.orderby = 6;
+                            
+                        } else {
+                            $span.addClass("up");
+                            orderby == -1 ? Product.orderby = 3 : Product.orderby = 5;
+                        }
+                    } else {
+                        $span.addClass("up");
+                        orderby == -1 ? Product.orderby = 3 : Product.orderby = 5;
+                    }
+                }
+                GetProductList(1);
+            });
+        });
+        function chatQQ() {
+            window.location.href = "mqqwpa://im/chat?chat_type=wpa&uin=@Model.ChatQQ&version=1&src_type=web&web_src=oicqzone.com";
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="list_search">
+        <div class="list_searchbox">
+            <input type="text" id="key" class="list_searchtxt" placeholder="搜索" style="color:black" />
+            <span><input type="button" id="search" value="" /><i class="icon-search"></i></span>
+        </div>
+        <a onclick="window.history.back()" title="" class="more"><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="shop_banner" style="background-image:url('@(string.IsNullOrEmpty(Model.BackImg)?"/img/defaultback.jpg":Model.BackImg)')"></div>
+    <div class="shophead_info">
+        <div class="shop_portrait"><img src="@(string.IsNullOrEmpty(Model.Img)?"/img/defaulthead.jpg":Model.Img)" alt=""></div>
+        <div class="shop_name">@Model.ShopName</div>
+        <div class="shop_address">@Model.Address.Replace(",","")</div>
+        @*<a href="#" title="" class="shop_gz"><span class="active">关注</span></a>*@
+    </div>
+    <div class="shop_num">全部商品<span>（@ViewData["shopcount"]件）</span></div>
+    <div class="list_sort">
+        <ul class="clearfix" id="orderby">
+            <li data-v="0" class="active"><a title="">综合</a></li>
+            <li data-v="2"><a title="">新品</a></li>
+            <li data-v="-1">
+            <a title=""><span class="up">销量<i class="icon-triangle-down"></i><i class="icon-triangle-down"></i></span></a></li>
+            <li data-v="-2"><a title=""><span class="down">价格<i class="icon-triangle-down"></i><i class="icon-triangle-down"></i></span></a></li>
+        </ul>
+    </div>
+    <div class="porduct_list">
+        <ul class="clearfix" id="ProductList">
+        </ul>
+    </div>
+    <div class="shop_footbox"></div>
+    <div class="shop_foot">
+        <ul>
+            <li><a href="tel:@Model.ServicePhone" title=""><span><i class="icon-phone"></i>联系电话</span></a></li>
+            <li><a onclick="chatQQ()" title=""><span><i class="icon-qq"></i>在线客服</span></a></li>
+        </ul>
+    </div>
+</body>
+</html>

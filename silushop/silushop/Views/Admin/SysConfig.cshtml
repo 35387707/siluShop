@@ -1,0 +1,157 @@
+﻿<style>#editConfigpanel{padding:0;margin-top:10%;}</style>
+<script>
+    var hasFooter = false;
+    var SysConfigManager = {};
+    SysConfigManager.searchKey = "";
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetSysConfigList(p);
+                }
+            });
+            hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        GetSysConfigList(index);
+    };
+    //获取用户列表
+    function GetSysConfigList(index) {
+        waiting();
+        $.get("SysConfigList", "index=" + index + "&key=" + SysConfigManager.searchKey, function (data) {
+            SysConfigManager.index = index;
+            $("#sysconfigbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    function USearch() {
+        SysConfigManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetSysConfigList(1);
+    }
+    //更改管理员状态
+    function CStatus(ID, e) {
+        waiting();
+        var status = 1;
+        if (e.value == "启用")
+        { status = 0; }
+        $.post("UpdateSysConfigStatus", "ID=" + ID + "&status=" + status, function (data) {
+            if (data.code == "1") {
+                if (status == 1) {
+                    e.value = "启用";
+                } else {
+                    e.value = "禁用";
+                }
+            } else {
+                alert(data.msg);
+            }
+            waitingHide();
+        }, "json")
+    }
+    function SysConfigEdit(id,name,val,des) {
+        $("#sysID").val(id);
+        $("#syskey").val(name);
+        $("#syskey").attr("disabled",true);
+        $("#sysval").val(val);
+        $("#sysdes").val(des);
+        $("#editConfig").show();
+    }
+    function editConfigClose() {
+        $("#editConfigpanel input:not([type='button'])").val("");
+        $("#syskey").removeAttr("disabled");
+        $("#editConfig").hide();
+    }
+    function URLencode(sStr) {
+        return escape(sStr).replace(/\+/g, '%2B').replace(/\"/g, '%22').replace(/\'/g, '%27').replace(/\//g, '%2F');
+    }
+    function editConfigAdmin() {
+      //  waiting();
+        var id = $("#sysID").val();
+        var value=$("#sysval").val();
+        var des = $("#sysdes").val();
+        if (id != "") {
+            $.post("EditSysConfig", "id=" + id + "&value=" + URLencode(value) + "&des=" + des, function (data) {
+                alert(data.msg);
+                if (data.code == "1") {
+                    GetSysConfigList(SysConfigManager.index);
+                    waitingHide();
+                }
+            }, "json");
+        } else {
+            var name = $("#syskey").val();
+            if (name == "") {
+                alert("键不能为空");
+                waitingHide();
+                return;
+            }
+            $.post("AddSysConfig", "name=" + name + "&value=" + value + "&des=" + des, function (data) {
+                alert(data.msg);
+                if (data.code == "1") {
+                    GetSysConfigList(SysConfigManager.index);
+                    waitingHide();
+                }
+            }, "json");
+        }
+    }
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">管理员管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+    <input value="新增" type="button" class="btn btn-primary" onclick="$('#editConfig').show()" />
+    <div class="col-md-12" id="sysconfiglist">
+        <table class="table table-hover" style="table-layout: fixed;word-break : break-all;">
+            <thead >
+                <tr>
+                    <th width="10%">键</th>
+                    <th width="10%">描述</th>
+                    <th width="50%">值</th>
+                    <th width="7%">状态</th>
+                    <th width="15%">更新时间</th>
+                    <td width="8%">操作</td>
+                </tr>
+            </thead>
+            <tbody id="sysconfigbody">
+                @Html.Action("SysConfigList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack col-md-12" id="editConfig">
+    <div class="panel panel-danger col-md-4 col-md-offset-4" id="editConfigpanel">
+        <div class="panel-heading"><input type="hidden" id="sysID"/>
+            修改系统配置<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="editConfigClose()" />
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                键：<input type="text" id="syskey" class="form-control" />
+            </div>
+            <div class="form-group">
+                值：<input type="text" id="sysval" class="form-control" />
+            </div>
+            <div class="form-group">
+                描述：<input type="text" id="sysdes" class="form-control" />
+            </div>
+        </div>
+        <div class="panel-footer" style="overflow:hidden">
+            <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="editConfigAdmin()" />
+        </div>
+    </div>
+</div>

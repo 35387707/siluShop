@@ -1,0 +1,21 @@
+﻿ .starul {
+  padding-left: 0;
+  overflow: hidden;
+ }
+ .starul li {
+  float: left;
+  list-style: none;
+  width: 3rem;
+  height: 3rem;
+  background: url(/img/star.gif);
+  background-size:100%;
+ }
+ .starul li a {
+  display: block;
+  width: 100%;
+  padding-top: 3rem;
+  overflow: hidden;
+ }
+ .starul li.light {
+  background-position: 0 -3rem;
+ }

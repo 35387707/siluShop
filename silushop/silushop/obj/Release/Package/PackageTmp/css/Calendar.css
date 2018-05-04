@@ -1,0 +1,62 @@
+﻿
+
+
+                    #cal {
+                        width: 100%;
+                        border: 1px solid #c3d9ff;
+                        font-size: 12px;
+                    }
+
+
+                        #cal ul#wk {
+                            margin: 0;
+                            padding: 0;
+                            height: 25px;
+                        }
+
+                            #cal ul#wk li {
+                                float: left;
+                                width: 14.28%;
+                                text-align: center;
+                                list-style: none;
+                            }
+
+                                #cal ul#wk li b {
+                                    font-weight: normal;
+                                    color: #c60b02;
+                                }
+
+                        #cal #cm {
+                            clear: left;
+                            border-top: 1px solid #ddd;
+                            border-bottom: 1px dotted #ddd;
+                            position: relative;
+                        }
+
+                            #cal #cm .cell {
+                                position: absolute;
+                                width: 14.28%;
+                                text-align: center;
+                            }
+
+                                #cal #cm .cell .so {
+                                    font: bold 16px arial;
+                                }
+
+                        #cal #bm {
+                            height: 24px;
+                        }
+                        #cal #fd {
+                            display: none;
+                            position: absolute;
+                            border: 1px solid #dddddf;
+                            background: #feffcd;
+                            padding: 10px;
+                            line-height: 21px;
+                            width: 100px;
+                        }
+
+                            #cal #fd b {
+                                font-weight: normal;
+                                color: #c60a00;
+                            }

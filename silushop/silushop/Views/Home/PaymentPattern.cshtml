@@ -1,0 +1,141 @@
+﻿
+@{
+    Layout = null;
+    RelexBarDLL.Users user = Session["user"] as RelexBarDLL.Users;
+}
+@model RelexBarDLL.ProductList
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>PaymentPattern</title>
+    <style>
+        div{color:#666;}
+        .paymentbody{background-color:#fafafa;}
+        .paymentbody p{padding:.5rem 1rem;}
+        .paymentbody p:nth-child(n+2){}
+        .paytype_title{font-size: 2rem;font-weight: 600;color:black;}
+        .paytype li{padding:1rem;}
+        .zfbico,.wxico,.gwqico{display: inline-block;
+            width: 2.5rem;
+            height: 2.5rem;
+            vertical-align: middle;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            margin:0 .5rem;
+        }
+        .gwqico{background-image:url("/images/ico17.png");}
+        .zfbico{background-image:url("/img/zhifubao.png");}
+        .wxico{background-image:url("/img/wechat.png");}
+        .selectitem{display:inline-block;width:2.5rem;height:2.5rem;vertical-align:middle;background-repeat:no-repeat;background-size:100%;
+                    background-image:url("/img/unchecked.png");
+        }
+        .paytype li:nth-child(n+2){border-top:1px solid #ccc;}
+        .zf{
+            border:none;
+            display: block;
+            width: 80%;
+            height: 4rem;
+            margin: 2rem auto 1rem auto;
+            font-size: 1.6rem;
+            background-color: #ff6633;
+            color: #fff;
+            border-radius: 0.4rem;
+        }
+        .pactive {
+            background-image:url("/img/checked.png");
+        }
+    </style>
+    <script>
+        var type = 1;
+        function pay() {
+            if (type == 0) {
+                $.post("/Pay/LocalPay/@Model.ID", null, function (data) {
+                    if (data.code == 1) {
+                        location.href = data.msg;
+                    } else {
+                        alert(data.msg);
+                    }
+                }, "json");
+            } else if (type == 1 || type == 2) {
+                $.post("/Pay/YaSh_ALiPay?pid=@Model.ID&t="+type, null, function (data) {
+                    if (data.code == 1) {
+                        location.href = "/account/gotourl?url=" + encodeURIComponent(data.msg);
+                    } else {
+                        alert(data.msg);
+                    }
+
+                }, "json");
+            }
+            @*else if(type==2){
+            @if (Convert.ToBoolean(ViewData["isWxLogin"])) {
+                @Html.Raw("location.href='"+ ViewData["wxloginurl"] + "';return;")
+            }
+                $(".wxqrcode").show();
+                $.post("/Pay/WXGZHPay/@Model.ID", null, function (data) {
+                    if (data.code == 1) {
+                        WXPay(data.msg);
+                    } else {
+                        alert(data.msg);
+                    }
+
+                },"json");
+            }*@
+            else if (type == 3) {//首购卷支付
+                $.post("/Pay/SGJPay?pid=@Model.ID", null, function (data) {
+                    if (data.code == 1) {
+                        alert("支付成功，恭喜您已成为我们的牙商会员了！");
+                        location.href = "/Shop/PersonCenter";
+                    } else {
+                        alert(data.msg);
+                    }
+                }, "json");
+            }
+        }
+        $(function () {
+            $(".paytype li").on("click", function () {
+                $(".paytype li .selectitem").removeClass("pactive");
+                $(this).find(".selectitem").addClass("pactive");
+                type = $(this).attr("data-type");
+                $("#payprice").text(@Model.Price);
+            });
+            $(".zf").on("click", function () {
+                if (confirm("确定支付？")) {
+                    pay();
+                }
+            });
+        });
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>选择支付方式</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="paymentbody">
+        <p class="paytype_title">选择支付方式</p>
+        <p>商品名称：@Model.Name</p>
+        <p>商品描述：@Model.Title</p>
+        <p>支付金额：<span id="payprice">@Model.Price</span> 元</p>
+    </div>
+    <div style="margin:1rem">支付方式</div>
+    <div style="height:1rem;background-color:white"></div>
+    <div>
+        <ul class="paytype">
+            <li data-type="1"><i class="selectitem pactive"></i><span class="zfbico"></span>支付宝</li>
+            <li data-type="2"><i class="selectitem"></i><span class="wxico"></span>微信</li>
+            @*<li data-type="3"><i class="selectitem pactive"></i><span class="gwqico"></span>首购卷</li>*@
+        </ul>
+    </div>
+    <input type="button" class="zf" value="立即支付"/>
+    <div class="porduct_list">
+        <ul class="clearfix" id="ProductList"></ul>
+    </div>
+    <div class="footnavbox"></div>
+    <div class="footnav">
+        @Html.Action("ShopFooter", "Static", new { id = 4 })
+    </div>
+</body>
+</html>

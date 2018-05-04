@@ -1,0 +1,202 @@
+﻿
+<style>
+    #uppwdpanel, #addpanel {
+        margin-top: 10%;
+        padding: 0;
+    }
+    #contentshow .panel{margin-top:10%;padding: 0;}
+    #edit-SysMsg-form>div{overflow:hidden;}
+    #edit-SysMsg-form>div:nth-child(n+2){margin-top:2rem;}
+</style>
+<script>
+    var hasFooter = false;
+    var SysMsgManager = {};
+    SysMsgManager.searchKey = "";
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetSysMsgList(p);
+                }
+            });
+            hasFooter = true;
+        }
+    }
+    function toPage(index) {
+        GetSysMsgList(index);
+    };
+    //获取用户列表
+    function GetSysMsgList(index) {
+        SysMsgManager.index = index;
+        waiting();
+        $.get("SysMsgList", "index=" + index + "&key=" + SysMsgManager.searchKey, function (data) {
+            
+            $("#adminbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    function USearch() {
+        SysMsgManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetSysMsgList(1);
+    }
+    //更改管理员状态
+    function CStatus(ID, e) {
+        waiting();
+        var status = 1;
+        if (e.value == "是")
+        { status = 0; }
+        $.post("UpdateSysMsgStatus", "id=" + ID + "&status=" + status, function (data) {
+            if (data.code == "1") {
+                if (status == 1) {
+                    e.value = "是";
+                } else {
+                    e.value = "否";
+                }
+            } else {
+                alert(data.msg);
+            }
+            waitingHide();
+        }, "json")
+    }
+    function addClose() {
+        $("#addpanel input:not([type='button'])").val("");
+        $("#Location").val(1);
+        $("#EditAD").hide();
+        $("#adimgshow").attr("src", "/img/noimg.png");
+        editor.txt.$txt.html("");
+        // 更新数据到textarea（有必要的话）
+        editor.updateValue();
+    }
+    function DelSysMsg(id,e) {
+        if (!confirm("是否删除此条数据？")) {
+            return;
+        }
+        $.post("DelSysMsg", "id=" + id, function (data) {
+            alert(data.msg);
+            if (data.code == 1) {
+                $(e).parents("tr").remove();
+            }
+        },"json");
+    }
+    function EditSysMsg(ID) {
+        waiting();
+        $.post("GetSysMsg", "ID=" + ID, function (data) {
+            $("#ID").val(data.ID);
+            $("#Title").val(data.Title);
+            editor.txt.$txt.html(data.Content);
+            // 更新数据到textarea（有必要的话）
+            editor.updateValue();
+            //editor.txt.html(data.Content);
+            waitingHide();
+            $("#EditAD").show();
+        }, "json");
+
+    }
+    function addSysMsg() {
+        waiting();
+        $.post("EditSysMsg", $("#edit-SysMsg-form").serialize(), function (data) {
+            alert(data.msg);
+            if (data.code == 1) {
+                GetSysMsgList(SysMsgManager.index);
+            }
+            waitingHide();
+        }, "json");
+    }
+    var editor;
+    function InitContent() {
+        editor = new wangEditor('Content');
+
+        editor.config.uploadImgUrl = '/File/ImgUpload2';
+        editor.create();
+    };
+    function contentShow(ID) {
+        waiting();
+        $.post("GetSysMsg", "ID=" + ID, function (data) {
+            $("#contentshow .panel-heading .title_c").html(data.Title);
+            $("#contentshow .panel-body .content").html(data.Content);
+            waitingHide();
+            $("#contentshow").show();
+        }, "json");
+    }
+    $(function () {
+        InitContent();
+    });
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">头条管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+    <input value="新增" type="button" class="btn btn-primary" onclick="$('#EditAD').show()" />
+    <div class="col-lg-12" id="adminlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>内容</th>
+                    <th>是否显示</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="adminbody">
+                @Html.Action("SysMsgList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack col-md-12" id="EditAD">
+    <div class="panel panel-danger col-md-8 col-md-offset-2" id="addpanel">
+        <div class="panel-heading">
+            编辑头条<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="addClose()" />
+        </div>
+        <div class="panel-body">
+            <form id="edit-SysMsg-form">
+                <div class="">
+                    <input type="text" class="hidden" name="ID" id="ID" />
+                    <div class="col-md-2">标题：</div>
+                    <div class="col-md-10"><input type="text" id="Title" name="Title" class="form-control" /></div>
+                </div>
+                <div class="">
+                    <div class="col-md-2">内容：</div>
+                    <div class="col-md-10">
+                        <textarea id="Content" name="Content" style="height:400px"></textarea>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+        <div class="panel-footer" style="overflow:hidden">
+            <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="addSysMsg()" />
+        </div>
+    </div>
+</div>
+<div class="showBack col-md-12" id="contentshow">
+    <div class="panel panel-primary col-md-4 col-md-offset-4">
+        <div class="panel-heading">
+            <div class="title_c"></div>
+            <input class="btn btn-default" type="button" style="float:right;margin-top: -27px;" value="关闭" onclick="$('#contentshow').hide()"/>
+        </div>
+        <div class="panel-body">
+            <div class="content" style="height:500px;overflow:auto;">
+
+            </div>
+        </div>
+    </div>
+</div>

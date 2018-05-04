@@ -1,0 +1,21 @@
+﻿@model string[]
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4>订单统计信息</h4></div>
+        <div class="panel-body">
+            <ul>
+                <li>待发货订单：@Model[0]</li>
+                <li>未确认订单：@Model[1]</li>
+                <li>已成交订单：@Model[2]</li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h4>商品统计信息</h4></div>
+        <div class="panel-body">
+            <ul>
+                <li>商品数量：@Model[3]</li>
+            </ul>
+        </div>
+    </div>
+</div>

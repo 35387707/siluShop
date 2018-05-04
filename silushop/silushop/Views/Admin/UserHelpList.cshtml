@@ -1,0 +1,20 @@
+﻿@model List<RelexBarDLL.UserHelp>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Title</td>
+        <td>@switch (Model[i].Type)
+        {
+            case 1: Write("关于我们"); break;
+            case 2: Write("帮助中心"); break;
+            case 3: Write("丝路商学院"); break;
+            case 4: Write("会员权限"); break;
+        } </td>
+        <td>
+            <input type="button" class="btn btn-danger" value="@((Model[i].Status==1)?"启用":"禁用")" onclick="CUStatus('@Model[i].ID',this)" />
+        </td>
+        <td>@Model[i].CreateTime</td>
+        <td><span class="btn btn-link" onclick="EditUserHelp('@Model[i].ID')">编辑</span><span class="btn btn-danger" onclick="deluserhelp('@Model[i].ID')">删除</span></td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

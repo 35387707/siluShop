@@ -1,0 +1,84 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   @Html.Action("Header", "Static")
+    <title>登陆</title>
+    <style>
+        .wjmm{margin: 0.5rem;
+    float: right;
+    color: blue;}
+    </style>
+    <script>
+        $(function () {
+            $("#yzm").on("click", function () {
+                $(this).attr("src", "/Verifycode/getVerifyCode?t=1&v="+Math.random());
+            });
+            $("#login").on("click", function () {
+                var account = $("#account").val();
+                var pwd = $("#pwd").val();
+                var yzm = $("#yzmcode").val();
+                if (account == ""||account.length==0) {
+                    return alert("账户不能为空");
+                }
+                if (pwd == ""||pwd.length==0) {
+                    return alert("密码不能为空");
+                }
+                if (yzm == "" || yzm.length == 0) {
+                    return alert("验证码不能为空");
+                }
+
+                $.post("/Account/DoLogin", "account=" + account + "&pwd=" + pwd + "&remember=1"+"&yzm="+yzm, function (data) {
+                    if (data.code == 1) {
+                        if (document.referrer != "" && document.referrer.indexOf("Regist") == -1 && document.referrer.indexOf("Login") == -1 && document.referrer.indexOf("AccountSafe")==-1) {
+                            location.href = document.referrer;
+                        } else {
+                            location.href = "/Shop/PersonCenter";
+                        }
+
+                    } else {
+                        alert(data.msg);
+                        if (data.code == -3) {
+                            $("#yzmcode").val("");
+                            $("#yzm").attr("src", "/Verifycode/getVerifyCode?t=1&v=" + Math.random());
+                        }
+                    }
+                }, "json");
+            });
+        });
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>登陆</h3>
+        <a  onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+
+    <div class="account">
+        <ul>
+            <li>
+                <div class="account_left">账号：</div>
+                <div class="account_right"><div class="account_account"><input id="account" type="text" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">密码：</div>
+                <div class="account_right"><div class="account_password"><input id="pwd" type="password" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">验证码：</div>
+                <div class="account_right"><div class="account_code"><input id="yzmcode" type="text" />
+                    <a href="#" title="" class="code"><img id="yzm" src="/Verifycode/getVerifyCode?t=1" /></a></div></div>
+            </li>
+        </ul>
+    </div>
+    <a class="wjmm" style="float:left" href="/Account/Register">我要注册</a>
+    <a class="wjmm" href="/Account/ForgetLoginPwd">忘记密码？</a>
+    <div class="btn1"><input type="button" id="login" value="确认" /></div>
+    <div class="footnavbox"></div>
+</body>
+</html>

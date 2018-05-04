@@ -1,0 +1,33 @@
+﻿@{ 
+    RelexBarDLL.AdminUser user = Session["admin"] as RelexBarDLL.AdminUser;
+    decimal totalJF;
+}
+@model List<RelexBarBLL.Models.AdminUsers >
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        @*<td>@Model[i].CardNumber</td>*@
+        <td>@Model[i].Name</td>
+        <td>@Model[i].TrueName</td>
+        <td>@((RelexBarBLL.Common.enUserLV)Model[i].LV)</td>
+        <td>@(new RelexBarBLL.UsersBLL().GetSiLuJiFen2(Model[i].ID, out totalJF).ToString("0.##"))</td>
+        <td>@(new RelexBarBLL.UsersBLL().GetHuikui(Model[i].ID).ToString("0.##"))</td>
+        <td>@Model[i].Balance</td>
+        <td>@Model[i].ShoppingVoucher</td>
+        <td><span class="btn-link" onclick="bankShow('@Model[i].ID')">查看</span></td>
+        <td>@Model[i].PrePhone</td>
+        <td>@Model[i].PreName</td>
+        <td><input type="button" class="btn btn-danger" value="@((Model[i].Status==1)?"启用":"禁用")" onclick="CUStatus('@Model[i].ID',this)"/>
+        </td>
+        <td>@Model[i].CreateTime</td>
+        <td>
+            @if (user.Name == "admin")
+            {
+                <span class="btn btn-link" onclick="EditUser('@Model[i].ID')">编辑</span><br />
+                <span class="btn btn-success" onclick="sendMsgShow(0,'@Model[i].ID')">发送消息</span><br />
+                <span class="btn btn-danger" onclick="resetpwd('@Model[i].ID')">重置密码</span>
+            }
+        </td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

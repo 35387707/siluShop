@@ -1,0 +1,15 @@
+﻿@model List<RelexBarDLL.SysConfig>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Name</td>
+        <td>@Model[i].Descrition</td>
+        <td>@Model[i].Value</td>
+        <td>
+            <input type="button" class="btn btn-danger" value="@((Model[i].Status==1)?"启用":"禁用")" onclick="CStatus('@Model[i].ID',this)" />
+        </td>
+        <td>@Model[i].UpdateTime</td>
+        <td><input type="button" value="编辑" onclick="SysConfigEdit(@Model[i].ID,'@Model[i].Name','@Model[i].Value','@Model[i].Descrition')" class="btn btn-danger" /></td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

@@ -1,0 +1,28 @@
+﻿@model List<RelexBarBLL.Models.TransferOutModel>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].CardNumber</td>
+        <td>@Model[i].Name</td>
+        <td>
+            银行：@Model[i].BankName——支行：@Model[i].BankZhiHang<br />
+            账户：@Model[i].BankAccount<br />
+            姓名：@Model[i].BankUser
+        </td>
+        <td>@Model[i].Price</td>
+        <td>@Model[i].ComPrice</td>
+        <td>@(Model[i].Price-Model[i].ComPrice- Model[i].Price*0.1M) </td>
+        <td>@Model[i].Reason</td>
+        <td>@Model[i].ApplyRemark</td>
+        <td>@(Model[i].Status==(int)RelexBarBLL.Common.enApplyStatus.Normal?"未处理":
+            Model[i].Status==(int)RelexBarBLL.Common.enApplyStatus.Success?"已回购":"已拒绝")</td>
+        <td>
+            @if (Model[i].Status==(int)RelexBarBLL.Common.enApplyStatus.Normal) {
+                <input type="button" class="btn btn-primary" onclick="txSuccess('@Model[i].ID')" value="回购完成"/>
+                <input type="button" class="btn btn-danger" onclick="txFaild('@Model[i].ID')" value="拒绝回购" />
+            }
+        </td>
+        <td>@Model[i].CreateTime</td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

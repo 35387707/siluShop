@@ -1,0 +1,155 @@
+﻿
+<style>
+    #uppwdpanel, #addpanel {
+        margin-top: 10%;
+        padding: 0;
+    }
+</style>
+<script>
+    var hasFooter = false;
+    var BirthdayCardManager = {};
+    BirthdayCardManager.searchKey = "";
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetBirthdayCardList(p);
+                }
+            });
+            hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        GetBirthdayCardList(index);
+    };
+    //获取用户列表
+    function GetBirthdayCardList(index) {
+        waiting();
+        $.get("BirthdayCardList", "index=" + index + "&key=" + BirthdayCardManager.searchKey, function (data) {
+            BirthdayCardManager.index = index;
+            $("#adminbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    function USearch() {
+        BirthdayCardManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetBirthdayCardList(1);
+    }
+    //更改管理员状态
+    function CStatus(ID, e) {
+        waiting();
+        var status = 1;
+        if (e.value == "启用")
+        { status = 0; }
+        $.post("UpdateBirthdayCardStatus", "id=" + ID + "&status=" + status, function (data) {
+            if (data.code == "1") {
+                if (status == 1) {
+                    e.value = "启用";
+                } else {
+                    e.value = "禁用";
+                }
+            } else {
+                alert(data.msg);
+            }
+            waitingHide();
+        }, "json")
+    }
+    function addClose() {
+        $("#addpanel input:not([type='button'])").val("");
+        $("#EditBC").hide();
+        $("#bcimgshow").attr("src", "/img/noimg.png");
+    }
+    function EditBirthdayCard(ID,Name,Remark,IMG){
+        $("#ID").val(ID);
+        $("#Name").val(Name);
+        $("#Remark").val("Remark");
+        $("#IMG").val(IMG);
+        $("#bcimgshow").attr("src",IMG);
+        $("#EditBC").show();
+    }
+    function addBirthdayCard() {
+        $.post("EditBirthdayCard", $("#edit-bc-form").serialize(), function (data) {
+            alert(data.msg);
+            if (data.code == "1") {
+                GetBirthdayCardList(BirthdayCardManager.index);
+            }
+        }, "json");
+    }
+    function UploadBCIMG(file) {
+        FileUpload(file, function (data) {
+            $("#IMG").val(data.msg);
+            $("#bcimgshow").attr("src",data.msg);
+        });
+    }
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">生日牌管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+    <input value="新增" type="button" class="btn btn-primary" onclick="$('#EditBC').show()" />
+    <div class="col-lg-12" id="adminlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>图片</th>
+                    <th>备注</th>
+                    <th>状态</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="adminbody">
+                @Html.Action("BirthdayCardList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack col-md-12" id="EditBC">
+    <div class="panel panel-danger col-md-4 col-md-offset-4" id="addpanel">
+        <div class="panel-heading">
+            编辑生日牌<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="addClose()" />
+        </div>
+        <div class="panel-body">
+            <form id="edit-bc-form">
+                <div class="form-group">
+                    <input type="text" class="hidden" name="ID" id="ID"/>
+                    <span class="col-md-3">名称：</span><div class="col-md-9"><input type="text" id="Name" name="Name" class="form-control" /></div>
+                </div>
+                <div class="form-group">
+                    <span class="col-md-3">图片：</span>
+                    <div class="col-md-9">
+                        <input type="text" id="IMG" name="IMG" class="hidden" />
+                        <input type="file" id="upload" onchange="UploadBCIMG(this)" class="hidden" />
+                        <img width="200" id="bcimgshow" src="/img/noimg.png" onclick="$('#upload').click()" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="col-md-3">备注：</span><div class="col-md-9"><input type="text" id="Remark" name="Remark" class="form-control" /></div>
+                </div>
+
+            </form>
+            
+        </div>
+        <div class="panel-footer" style="overflow:hidden">
+            <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="addBirthdayCard()" />
+        </div>
+    </div>
+</div>

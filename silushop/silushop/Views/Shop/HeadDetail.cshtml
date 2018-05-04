@@ -1,0 +1,28 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.UserMsg
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>@Model.Title</title>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>@Model.Title</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+        @*<a href="#" title=""><i class="icon-external-link"></i></a>*@
+    </div>
+    <div class="article_content">
+        @Html.Raw(Model.Content)
+    </div>
+    <div class="footnavbox"></div>
+    <div class="footnav">
+        @Html.Action("ShopFooter", "Static", new { id = 0 })
+    </div>
+</body>
+</html>

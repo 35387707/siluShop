@@ -1,0 +1,195 @@
+﻿
+@{
+    Layout = null;
+}
+@model List<RelexBarBLL.Models.CartModel>
+<!DOCTYPE html>
+
+<html>
+<head>
+   @Html.Action("Header", "Static")
+    <title>购物车</title>
+    <style>
+        .c_active {
+            background-image:url("/images/ico11.png") !important;
+        }
+    </style>
+    <script>
+        var newList=[];
+        var list =@Html.Raw(Model.SerializeObject());
+        
+        function init(){
+            for (var i = 0; i < list.length; i++) {
+                var flag=true
+                for(var j=0;j<newList.length&&flag;j++){
+
+                    if(list[i].ShopID==newList[j].ShopID){
+                        newList[j].Data.push(list[i]);
+                        break;
+                    }
+                    if(j==newList.length-1){
+                        var temp={ShopID:list[i].ShopID,ShopName:list[i].ShopName,Data:[]};
+                        temp.Data.push(list[i]);
+                        newList.push(temp);
+                        break;
+                    }
+                }
+                if(newList.length==0){
+                    var temp={ShopID:list[i].ShopID,ShopName:list[i].ShopName,Data:[]};
+                    temp.Data.push(list[i]);
+                    newList.push(temp);
+                    continue;
+                }
+                
+            }
+            var temphtml=[];
+            for (var i = 0; i < newList.length; i++) {
+                temphtml.push('<dl> <dt><div onclick="toShop(\''+newList[i].ShopID+'\')"><i class="icon-shop"></i>'+newList[i].ShopName+'</div><i class="choose"></i><i class="icon-chevron-thin-left"></i></dt>');
+                for (var j = 0; j < newList[i].Data.length; j++) {
+                    temphtml.push('<dd><div class="cartlist_pic"><a href="ProductDetail/'+newList[i].Data[j].ProductID+'" title="" class="cartlist_thumb"><img src="'+newList[i].Data[j].Img+'" alt=""></a><i class="choose"></i></div>');
+                    temphtml.push('<div class="cartlist_info"><h4><a href="#" title="">'+newList[i].Data[j].Name+'</a></h4><h5>￥<strong class="item-p">'+newList[i].Data[j].Price+'</strong></h5>');
+                    temphtml.push('<div class="cartlist_jj jj clearfix"><div class="jj_btn">－</div><div class="jj_txt"><input class="item-c" type="number" readonly value="'+newList[i].Data[j].Count+'" /></div><div class="jj_btn">＋</div></div>');
+                    temphtml.push('<a title="" id="'+newList[i].Data[j].ID+'"  class="cartlist_del"><i class="icon-trash-2"></i></a></div></dd>');
+                }
+                temphtml.push('</dl>');
+            }
+            
+            $("#cartlist").html(temphtml.join(""));
+        }
+        function toShop(id){
+            location.href="/Shop/ShopHome/"+id;
+        }
+        $(function(){
+            init();
+            $(".cartlist_del").on("click", function () {
+                var bool = window.confirm("是否取消该商品？");
+                if (bool) {
+                    var id = $(this).attr("id");
+                    $.post("/Shop/DeleteCar", "id=" + id, function (data) {
+                        if (data.code == 1) {
+                            var $dl=$("#" + id).parents("dl");
+                            if($dl.find("dd").length==1){
+                                $dl.remove();
+                            }else{
+                                $("#" + id).parents("dd").remove();
+                            }
+                            
+                            
+                        } else {
+                            alert("删除失败");
+                        }
+                    }, "json");
+                } else {
+                    return;
+                };
+            });
+            $("#cartlist dt .choose").on("click",function(){
+                if($(this).hasClass("c_active")){
+                    $(this).removeClass("c_active");
+                    $(this).parents("dl").find("dd .choose").removeClass("c_active");
+                }else{
+                    $(this).addClass("c_active");
+                    $(this).parents("dl").find("dd .choose").addClass("c_active");
+                }
+                resetSum();
+            });
+            $("#cartlist dd .choose").on("click",function(){
+                if($(this).hasClass("c_active")){
+                    $(this).removeClass("c_active");
+                }else{
+                    $(this).addClass("c_active");
+                }
+                resetSum();
+            });
+            $("#selectall").on("click",function(){
+                if($(this).hasClass("c_active")){
+                    $(".choose").removeClass("c_active");
+                    $("#sum").text("0");
+                }else{
+                    $(".choose").addClass("c_active");
+                    resetSum();
+                }
+                
+                
+            });
+            $(".jj_btn").on("click",function(){
+                var t=$(this).text();
+                var $c=$(this).parent().find(".item-c");
+                var c=parseInt($c.val());
+                if(t=="＋"){
+                    $c.val(c+1);
+                }else{
+                    if(c>1){
+                        $c.val(c-1);
+                    }
+                }
+                resetSum();
+            });
+            $("#js").on("click",function(){
+                var sdata=getData();
+                if(sdata.length==0){
+                    return alert("请先选择商品");
+                }
+                $.post("/Shop/UpdateCar", "data=" + JSON.stringify(sdata), function (data) {
+                    if (data.code == 1) {
+                        var cid=[];
+                        for (var i = 0; i < sdata.length; i++) {
+                            cid.push(sdata[i].ID);
+                        }
+                        $.post("/Shop/OrderConfirmByCar", "cid="+cid.join(","), function (data2) {
+                            if (data2.code == 1) {
+                                location.href = "/Shop/OrderConfirm/" + data2.msg;
+                            } else {
+                                alert(data2.msg);
+                            }
+                        }, "json");
+                    } else {
+                        alert(data.msg);
+                    }
+                }, "json");
+            });
+        });
+        function getData(){
+            var data=[];
+            $("dd").each(function(){
+                if($(this).find(".choose").hasClass("c_active")){
+                    var id=$(this).find(".cartlist_del").attr("id");
+                    var count=$(this).find(".item-c").val();
+                    data.push({ID:id,Count:count});
+                }
+            });
+            return data;
+        }
+        function resetSum(){
+            var sum=0;
+            $("dd").each(function(){
+                if($(this).find(".choose").hasClass("c_active")){
+                    var item_sum=parseFloat($(this).find(".item-p").text())*parseFloat($(this).find(".item-c").val());
+                    sum+=item_sum;
+                }
+                $("#sum").text(sum);
+            });
+        }
+        
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>购物车</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div id="cartlist" class="cartlist">
+        
+    </div>
+    <div class="cartbalancebox"></div>
+    <div class="cartbalance">
+        <span class="cartbalance_choose">全选<i id="selectall" class="choose"></i></span>
+        <div class="cartbalance_info"><h4>合计：<strong>￥<span id="sum">0</span></strong></h4><p>订单满100元，享免费配送服务</p></div>
+        <a id="js" title="" class="cartbalance_btn">结算</a>
+    </div>
+    <div class="footnavbox"></div>
+    <div class="footnav">
+        @Html.Action("ShopFooter", "Static", new { id = 3 })
+    </div>
+</body>
+</html>

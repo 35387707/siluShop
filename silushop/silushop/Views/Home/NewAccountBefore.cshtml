@@ -1,0 +1,359 @@
+﻿
+@{
+    Layout = null;
+    RelexBarDLL.Users user = Session["user"] as RelexBarDLL.Users;
+    //if (!string.IsNullOrEmpty(Request.QueryString["uid"]))
+    //{
+    //    user = new RelexBarBLL.UsersBLL().GetUserById(Request.QueryString["uid"]);
+    //}
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>选择节点</title>
+    <script>
+        var width = 0;
+        var height = 0;
+        var x_width = 0;
+        var y = 150;//第一个y坐标
+        var radius = 15;//半径
+        var ctx;
+        var ClickHistory = [];
+        function User(id, name, phone,left,right,level,fid) {
+            var _id = id;
+            var _name = name;
+            var _phone = phone;
+            var _left=left;
+            var _right = right;
+            var _point;
+            var _level = level;
+            var _fid = fid;
+            return {
+                getId:function(){
+                    return _id;
+                },
+                getName: function () {
+                    return _name;
+                },
+                getPhone:function(){
+                    return _phone;
+                },
+                getLeft:function(){
+                    return _left;
+                },
+                getRight:function(){
+                    return _right;
+                },
+                setLeft: function (sleft) {
+                    _left = sleft;
+                },
+                setRight: function (sRight) {
+                    _right = sRight;
+                },
+                setPoint:function(point){
+                    _point = point;
+                },
+                getPoint: function () {
+                    return _point;
+                },
+                getLevel: function () {
+                    return _level;
+                },
+                getFid: function () {
+                    return _fid;
+                },
+                setLevel: function (sLevel) {
+                    _level = sLevel;
+                }
+            }
+        }
+        var root = new User('@user.ID', '@user.TrueName', '@user.Phone', null, null, 1, '@user.FID');
+        var subdata = {};
+        function findUser(id, rootNode) {
+            if (rootNode == null) {
+                return null;
+            }
+            if (id == rootNode.getId()) {
+                return rootNode();
+            }
+            var findNode = null;
+            if (rootNode.getLeft()&&id == rootNode.getLeft().getId()) {
+                return rootNode.getLeft();
+            } else {
+                if(rootNode.getLeft()){
+                    findNode=findUser(id,rootNode.getLeft());
+                }
+            }
+            if (findNode != null) {
+                return findNode;
+            }
+            if (rootNode.getRight()&&id == rootNode.getRight().getId()) {
+                return rootNode.getRight();
+            } else {
+                if(rootNode.getRight()){
+                    findNode=findUser(id,rootNode.getRight());
+                }
+            }
+            return findNode;
+        }
+
+        function findUser(point,rootNode) {
+            if(rootNode==null){
+                return null;
+            }
+            var upoint = rootNode.getPoint();
+            var findNode=null;
+            if ((point.x >= upoint.x - radius && point.x <= upoint.x + radius) && (point.y >= upoint.y - radius && point.y <= upoint.y + radius)) {
+                return rootNode;
+            }
+            if(rootNode.getLeft()){
+                findNode=findUser(point, rootNode.getLeft());
+            }
+
+            if (findNode != null) {
+                return findNode;
+            }
+            if (rootNode.getRight()) {
+                findNode = findUser(point, rootNode.getRight());
+            }
+            return findNode;
+        }
+
+        function GetNextUsers(user) {
+            if (user == null || user.getId() == null) {
+                user.setLeft(new User(null, null, null, null, null, user.getLevel() + 1, user.getId()));
+                user.setRight(new User(null, null, null, null, null, user.getLevel() + 1, user.getId()));
+                return;
+            }
+            $.post("/Account/GetNextUsers/" + user.getId(), null, function (data) {
+
+                if (data.length == 0) {
+                    user.setLeft(new User(null, null, null, null, null, user.getLevel() + 1, user.getId()));
+                    user.setRight(new User(null, null, null, null, null, user.getLevel() + 1, user.getId()));
+                }else if (data.length > 0) {
+                    user.setLeft(new User(data[0].ID, data[0].Name, data[0].Phone, null, null, user.getLevel() + 1, user.getId()));
+                    if (data.length >= 2) {
+                        user.setRight(new User(data[1].ID, data[1].Name, data[1].Phone, null, null, user.getLevel() + 1, user.getId()))
+                    } else{
+                        user.setRight(new User(null, null, null, null, null, user.getLevel() + 1, user.getId()));
+                    }
+                }
+                nextUser(user);
+            }, "json")
+        }
+        $(function () {
+            initpage();
+            $(".backPre").on("click",back);
+            $("#next").on("click", function () {
+                if (!subdata.FID) {
+                    alert("请选择新增节点");
+                } else {
+                    $.post("/Home/CheckNewAccountBefore", subdata, function (data) {
+                        if (data.code == 1) {
+                            location.href = "/Home/NewAccount?pid=@Request.QueryString["pid"]";
+                        } else {
+                            alert(data.msg);
+                        }
+                    }, "json");
+                }
+            });
+        });
+
+        function initpage() {
+            GetNextUsers(root);
+            ClickHistory.push(root);
+            if (ClickHistory.length > 1) {
+                $(".backPre").removeClass("hide");
+            }
+            init();
+
+        }
+        function back() {
+            if (ClickHistory.length > 1) {
+                root = ClickHistory[ClickHistory.length - 2];
+                ClickHistory.splice(ClickHistory.length - 2, 2);
+                initpage();
+                if (ClickHistory.length == 1) {
+                    $(".backPre").addClass("hide");
+                }
+            }
+        }
+
+        function init(){
+           width= document.documentElement.clientWidth;
+           height = document.documentElement.clientHeight;
+           $(".body").html('<canvas id="cav" width="' + width + '" height="' + height + '"></canvas>');
+           root.setPoint({ x: width / 2,y:y });
+           var cav = document.getElementById("cav");
+           cav.addEventListener('click', cav_Click,false);
+           //cav.style.width = width+"px";
+           //cav.style.height = height+"px";
+           ctx = cav.getContext("2d");
+           x_width=width / 8;
+           ctx.beginPath();
+           ctx.arc(root.getPoint().x,root.getPoint().y, radius, 0, 2*Math.PI,false);
+           ctx.stroke();
+           ctx.fillStyle = "blue";
+           ctx.fill();
+        }
+        function arcUser(user,fillStyle) {
+            ctx.beginPath();
+            if (!fillStyle) {
+                if (user.getId() != null) {
+                    ctx.fillStyle = "blue";
+                } else {
+                    ctx.fillStyle = "#ccc";
+                }
+            } else {
+                ctx.fillStyle = fillStyle;
+            }
+
+            ctx.arc(user.getPoint().x, user.getPoint().y, radius, 0, 2 * Math.PI, false);
+            ctx.fill();
+            if (user.getId() != null) {
+                ctx.fillStyle = "green";
+                ctx.fillText(user.getPhone(), user.getPoint().x - radius - 10, user.getPoint().y + radius);
+                ctx.fillText(user.getName(), user.getPoint().x - radius - 10, user.getPoint().y + radius + 15);
+            }
+        }
+        function lineU2U(user,user2) {
+            ctx.beginPath();
+            ctx.moveTo(user.getPoint().x, user.getPoint().y);
+            ctx.lineTo(user2.getPoint().x, user2.getPoint().y);
+            ctx.stroke();
+        }
+
+        function nextUser(user) {
+            var point_l = { x: user.getPoint().x - x_width, y: user.getPoint().y + 60 };
+            if(user.getLevel()==1){
+                point_l.x -= 20;
+            }
+            user.getLeft().setPoint(point_l);
+            lineU2U(user, user.getLeft());
+
+            var point_r = { x: user.getPoint().x + x_width, y: point_l.y };
+            if (user.getLevel()== 1) {
+                point_r.x += 20;
+            }
+            user.getRight().setPoint(point_r);
+            lineU2U(user,user.getRight());
+            arcUser(user);
+            arcUser(user.getLeft());
+            arcUser(user.getRight());
+        }
+        function cav_Click(e) {
+            var point = getEventPosition(e);
+            var user = findUser(point, root);
+
+            if (user != null && user.getId() != null && (user.getRight() == null && user.getLeft() == null) && user.getLevel() < 3) {
+                console.log(user.getId());
+                GetNextUsers(user);
+            }
+
+            if (user != null && user.getId() == null) {
+                if (confirm("是否选择该节点新增用户？")) {
+                    FPSRefresh();
+                    arcUser(user, "#4dd739");
+                    console.log(user.getFid());
+                    subdata.FID = user.getFid();
+                }
+            } else if (user != null && user.getId() != null&&user.getLevel()==3) {
+                root = user;
+                root.setLevel(1);
+                initpage();
+            }
+
+        }
+        function FPSRefresh() {
+            ctx.clearRect(0, 0, width, height);
+            RefreshLine(root);
+            RefreshARC(root);
+        }
+        function RefreshLine(rootNode) {
+            if (rootNode.getLeft()) {
+                lineU2U(rootNode, rootNode.getLeft());
+                RefreshLine(rootNode.getLeft());
+            }
+            if (rootNode.getRight()) {
+                lineU2U(rootNode, rootNode.getRight());
+                RefreshLine(rootNode.getRight());
+            }
+        }
+        function RefreshARC(rootNode) {
+            arcUser(rootNode);
+            if (rootNode.getLeft()) {
+                RefreshARC(rootNode.getLeft());
+            }
+            if (rootNode.getRight()) {
+                RefreshARC(rootNode.getRight());
+            }
+        }
+
+        function getEventPosition(ev) {
+            var x, y;
+            if (ev.layerX || ev.layerX == 0) {
+                x = ev.layerX;
+                y = ev.layerY;
+            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+                x = ev.offsetX;
+                y = ev.offsetY;
+            }
+            return { x: x, y: y };
+        }
+
+    </script>
+    <style>
+        .body{width:100%;height:100%;}
+        #cav{
+            background-color:#f4f4f4;
+            margin:auto;
+            position:absolute;
+            top:0;
+            left:0;
+            z-index:99;
+        }
+        .heade_r{
+            position: absolute;
+            font-size: 1.6rem;
+            right: 1rem;
+            top: 50%;
+            margin-top: -1.5rem;
+            line-height: 3rem;
+            color: #333;
+            height: 3rem;
+        }
+        .header{z-index:100;}
+        .backPre{
+                line-height: 3rem;
+                color: #333;
+                height: 3rem;
+                z-index: 9999;
+                position: relative;
+                float: right;
+                border: none;
+                padding: .2rem .5rem;
+                display:inline-block;
+                border-radius: .5rem;
+                background-color:#FF5809;
+                color:white;
+        }
+        .hide{
+            display:none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3>我要购货</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+        <span class="heade_r" id="next">下一步</span>
+    </div>
+    <a class="backPre hide">返回上一级</a>    
+    <div class="body">
+        
+    </div>
+</body>
+</html>

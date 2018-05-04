@@ -1,0 +1,675 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RelexBarModelStoreContainer" CdmEntityContainer="RelexBarEntities">
+    <EntitySetMapping Name="AdminUser">
+      <EntityTypeMapping TypeName="RelexBarModel.AdminUser">
+        <MappingFragment StoreEntitySet="AdminUser">
+          <ScalarProperty Name="RID" ColumnName="RID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="PowerType" ColumnName="PowerType" />
+          <ScalarProperty Name="Psw" ColumnName="Psw" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdsList">
+      <EntityTypeMapping TypeName="RelexBarModel.AdsList">
+        <MappingFragment StoreEntitySet="AdsList">
+          <ScalarProperty Name="Location" ColumnName="Location" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="SEO" ColumnName="SEO" />
+          <ScalarProperty Name="Descrition" ColumnName="Descrition" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="LinkTo" ColumnName="LinkTo" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BankList">
+      <EntityTypeMapping TypeName="RelexBarModel.BankList">
+        <MappingFragment StoreEntitySet="BankList">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="BankUser" ColumnName="BankUser" />
+          <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+          <ScalarProperty Name="BankZhiHang" ColumnName="BankZhiHang" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Cart">
+      <EntityTypeMapping TypeName="RelexBarModel.Cart">
+        <MappingFragment StoreEntitySet="Cart">
+          <ScalarProperty Name="TrueProductID" ColumnName="TrueProductID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="IsBuy" ColumnName="IsBuy" />
+          <ScalarProperty Name="Count" ColumnName="Count" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RecAddress">
+      <EntityTypeMapping TypeName="RelexBarModel.RecAddress">
+        <MappingFragment StoreEntitySet="RecAddress">
+          <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Sex" ColumnName="Sex" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="AreaCode" ColumnName="AreaCode" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="AreaID" ColumnName="AreaID" />
+          <ScalarProperty Name="TrueName" ColumnName="TrueName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Recharge">
+      <EntityTypeMapping TypeName="RelexBarModel.Recharge">
+        <MappingFragment StoreEntitySet="Recharge">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ComVal" ColumnName="ComVal" />
+          <ScalarProperty Name="Val" ColumnName="Val" />
+          <ScalarProperty Name="RechType" ColumnName="RechType" />
+          <ScalarProperty Name="ToID" ColumnName="ToID" />
+          <ScalarProperty Name="FromUID" ColumnName="FromUID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RedPacket">
+      <EntityTypeMapping TypeName="RelexBarModel.RedPacket">
+        <MappingFragment StoreEntitySet="RedPacket">
+          <ScalarProperty Name="ZGCardID" ColumnName="ZGCardID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="C_index" ColumnName="_index" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="BelongID" ColumnName="BelongID" />
+          <ScalarProperty Name="RedType" ColumnName="RedType" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="RID" ColumnName="RID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RedPacketList">
+      <EntityTypeMapping TypeName="RelexBarModel.RedPacketList">
+        <MappingFragment StoreEntitySet="RedPacketList">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="C_index" ColumnName="_index" />
+          <ScalarProperty Name="BelongID" ColumnName="BelongID" />
+          <ScalarProperty Name="LV" ColumnName="LV" />
+          <ScalarProperty Name="RedType" ColumnName="RedType" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="Money" ColumnName="Money" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="RID" ColumnName="RID" />
+          <ScalarProperty Name="RLID" ColumnName="RLID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SysConfig">
+      <EntityTypeMapping TypeName="RelexBarModel.SysConfig">
+        <MappingFragment StoreEntitySet="SysConfig">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Descrition" ColumnName="Descrition" />
+          <ScalarProperty Name="Page" ColumnName="Page" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TransferOut">
+      <EntityTypeMapping TypeName="RelexBarModel.TransferOut">
+        <MappingFragment StoreEntitySet="TransferOut">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="ApplyRemark" ColumnName="ApplyRemark" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+          <ScalarProperty Name="ComPrice" ColumnName="ComPrice" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="BankUser" ColumnName="BankUser" />
+          <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+          <ScalarProperty Name="BankZhiHang" ColumnName="BankZhiHang" />
+          <ScalarProperty Name="BankName" ColumnName="BankName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="VerifyCodes">
+      <EntityTypeMapping TypeName="RelexBarModel.VerifyCodes">
+        <MappingFragment StoreEntitySet="VerifyCodes">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CodeType" ColumnName="CodeType" />
+          <ScalarProperty Name="HitTime" ColumnName="HitTime" />
+          <ScalarProperty Name="MaxHitTime" ColumnName="MaxHitTime" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Web_Area">
+      <EntityTypeMapping TypeName="RelexBarModel.Web_Area">
+        <MappingFragment StoreEntitySet="Web_Area">
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="Family" ColumnName="Family" />
+          <ScalarProperty Name="LV" ColumnName="LV" />
+          <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Category">
+      <EntityTypeMapping TypeName="RelexBarModel.Category">
+        <MappingFragment StoreEntitySet="Category">
+          <ScalarProperty Name="EngLishName" ColumnName="EngLishName" />
+          <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+          <ScalarProperty Name="SrcList" ColumnName="SrcList" />
+          <ScalarProperty Name="SrcDetail" ColumnName="SrcDetail" />
+          <ScalarProperty Name="IsShow" ColumnName="IsShow" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Keywords" ColumnName="Keywords" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Family" ColumnName="Family" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="LV" ColumnName="LV" />
+          <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vw_Orders">
+      <EntityTypeMapping TypeName="RelexBarModel.vw_Orders">
+        <MappingFragment StoreEntitySet="vw_Orders">
+          <ScalarProperty Name="Cash" ColumnName="Cash" />
+          <ScalarProperty Name="OtherPrice" ColumnName="OtherPrice" />
+          <ScalarProperty Name="LocalPrice" ColumnName="LocalPrice" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="RecID" ColumnName="RecID" />
+          <ScalarProperty Name="IsShow" ColumnName="IsShow" />
+          <ScalarProperty Name="HeadID" ColumnName="HeadID" />
+          <ScalarProperty Name="Family" ColumnName="Family" />
+          <ScalarProperty Name="CateName" ColumnName="CateName" />
+          <ScalarProperty Name="Ustatus" ColumnName="Ustatus" />
+          <ScalarProperty Name="UTrueName" ColumnName="UTrueName" />
+          <ScalarProperty Name="Uphone" ColumnName="Uphone" />
+          <ScalarProperty Name="proType" ColumnName="proType" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="proPriceType" ColumnName="proPriceType" />
+          <ScalarProperty Name="proNumber" ColumnName="proNumber" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="Count" ColumnName="Count" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="proName" ColumnName="proName" />
+          <ScalarProperty Name="proPrice" ColumnName="proPrice" />
+          <ScalarProperty Name="orderProID" ColumnName="orderProID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="FinishTime" ColumnName="FinishTime" />
+          <ScalarProperty Name="RecTime" ColumnName="RecTime" />
+          <ScalarProperty Name="SendTime" ColumnName="SendTime" />
+          <ScalarProperty Name="PayTime" ColumnName="PayTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+          <ScalarProperty Name="Fee" ColumnName="Fee" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="PayNumber" ColumnName="PayNumber" />
+          <ScalarProperty Name="Payment" ColumnName="Payment" />
+          <ScalarProperty Name="RecSex" ColumnName="RecSex" />
+          <ScalarProperty Name="RecEmail" ColumnName="RecEmail" />
+          <ScalarProperty Name="RecAreaCode" ColumnName="RecAreaCode" />
+          <ScalarProperty Name="RecPhone" ColumnName="RecPhone" />
+          <ScalarProperty Name="RecAddress" ColumnName="RecAddress" />
+          <ScalarProperty Name="RecAreaID" ColumnName="RecAreaID" />
+          <ScalarProperty Name="RecName" ColumnName="RecName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserMsg">
+      <EntityTypeMapping TypeName="RelexBarModel.UserMsg">
+        <MappingFragment StoreEntitySet="UserMsg">
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="IsShow" ColumnName="IsShow" />
+          <ScalarProperty Name="MessageType" ColumnName="MessageType" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Subject" ColumnName="Subject" />
+          <ScalarProperty Name="FromUid" ColumnName="FromUid" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Report">
+      <EntityTypeMapping TypeName="RelexBarModel.Report">
+        <MappingFragment StoreEntitySet="Report">
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="CountDate" ColumnName="CountDate" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OtherPayServiceLog">
+      <EntityTypeMapping TypeName="RelexBarModel.OtherPayServiceLog">
+        <MappingFragment StoreEntitySet="OtherPayServiceLog">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="RespStr" ColumnName="RespStr" />
+          <ScalarProperty Name="ReqStr" ColumnName="ReqStr" />
+          <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+          <ScalarProperty Name="TOID" ColumnName="TOID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+          <ScalarProperty Name="PayNumber" ColumnName="PayNumber" />
+          <ScalarProperty Name="PayPrice" ColumnName="PayPrice" />
+          <ScalarProperty Name="Payment" ColumnName="Payment" />
+          <ScalarProperty Name="Page" ColumnName="Page" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Logs">
+      <EntityTypeMapping TypeName="RelexBarModel.Logs">
+        <MappingFragment StoreEntitySet="Logs">
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Ip" ColumnName="Ip" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Page" ColumnName="Page" />
+          <ScalarProperty Name="LogType" ColumnName="LogType" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderList">
+      <EntityTypeMapping TypeName="RelexBarModel.OrderList">
+        <MappingFragment StoreEntitySet="OrderList">
+          <ScalarProperty Name="Cash" ColumnName="Cash" />
+          <ScalarProperty Name="OtherPrice" ColumnName="OtherPrice" />
+          <ScalarProperty Name="LocalPrice" ColumnName="LocalPrice" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="RecID" ColumnName="RecID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="FinishTime" ColumnName="FinishTime" />
+          <ScalarProperty Name="RecTime" ColumnName="RecTime" />
+          <ScalarProperty Name="SendTime" ColumnName="SendTime" />
+          <ScalarProperty Name="PayTime" ColumnName="PayTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+          <ScalarProperty Name="Fee" ColumnName="Fee" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="PayNumber" ColumnName="PayNumber" />
+          <ScalarProperty Name="Payment" ColumnName="Payment" />
+          <ScalarProperty Name="RecSex" ColumnName="RecSex" />
+          <ScalarProperty Name="RecEmail" ColumnName="RecEmail" />
+          <ScalarProperty Name="RecAreaCode" ColumnName="RecAreaCode" />
+          <ScalarProperty Name="RecPhone" ColumnName="RecPhone" />
+          <ScalarProperty Name="RecAddress" ColumnName="RecAddress" />
+          <ScalarProperty Name="RecAreaID" ColumnName="RecAreaID" />
+          <ScalarProperty Name="RecName" ColumnName="RecName" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RechargeCard">
+      <EntityTypeMapping TypeName="RelexBarModel.RechargeCard">
+        <MappingFragment StoreEntitySet="RechargeCard">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CardType" ColumnName="CardType" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Val" ColumnName="Val" />
+          <ScalarProperty Name="ValType" ColumnName="ValType" />
+          <ScalarProperty Name="CardPsw" ColumnName="CardPsw" />
+          <ScalarProperty Name="CardNum" ColumnName="CardNum" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PayRecord">
+      <EntityTypeMapping TypeName="RelexBarModel.PayRecord">
+        <MappingFragment StoreEntitySet="PayRecord">
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="IsBuyProduct" ColumnName="IsBuyProduct" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="LocalMoney" ColumnName="LocalMoney" />
+          <ScalarProperty Name="MaxMoney" ColumnName="MaxMoney" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PayListDetail">
+      <EntityTypeMapping TypeName="RelexBarModel.PayListDetail">
+        <MappingFragment StoreEntitySet="PayListDetail">
+          <ScalarProperty Name="FromPRID" ColumnName="FromPRID" />
+          <ScalarProperty Name="FromUID" ColumnName="FromUID" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Holidays">
+      <EntityTypeMapping TypeName="RelexBarModel.Holidays">
+        <MappingFragment StoreEntitySet="Holidays">
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserHelp">
+      <EntityTypeMapping TypeName="RelexBarModel.UserHelp">
+        <MappingFragment StoreEntitySet="UserHelp">
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="RelexBarModel.Users">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="FugouScore" ColumnName="FugouScore" />
+          <ScalarProperty Name="CommendID" ColumnName="CommendID" />
+          <ScalarProperty Name="WX_UnionID" ColumnName="WX_UnionID" />
+          <ScalarProperty Name="WX_OpenID" ColumnName="WX_OpenID" />
+          <ScalarProperty Name="ShoppingVoucher" ColumnName="ShoppingVoucher" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="C_index" ColumnName="_index" />
+          <ScalarProperty Name="RealCheck" ColumnName="RealCheck" />
+          <ScalarProperty Name="FID" ColumnName="FID" />
+          <ScalarProperty Name="HeadImg2" ColumnName="HeadImg2" />
+          <ScalarProperty Name="HeadImg1" ColumnName="HeadImg1" />
+          <ScalarProperty Name="Descrition" ColumnName="Descrition" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="AreaID" ColumnName="AreaID" />
+          <ScalarProperty Name="UserType" ColumnName="UserType" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="TotalScore" ColumnName="TotalScore" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="LV" ColumnName="LV" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Sex" ColumnName="Sex" />
+          <ScalarProperty Name="CredImg2" ColumnName="CredImg2" />
+          <ScalarProperty Name="CredImg1" ColumnName="CredImg1" />
+          <ScalarProperty Name="CredID" ColumnName="CredID" />
+          <ScalarProperty Name="PayPsw" ColumnName="PayPsw" />
+          <ScalarProperty Name="Psw" ColumnName="Psw" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="WxName" ColumnName="WxName" />
+          <ScalarProperty Name="TrueName" ColumnName="TrueName" />
+          <ScalarProperty Name="CardNumber" ColumnName="CardNumber" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdminMenu">
+      <EntityTypeMapping TypeName="RelexBarModel.AdminMenu">
+        <MappingFragment StoreEntitySet="AdminMenu">
+          <ScalarProperty Name="AdminLevel" ColumnName="AdminLevel" />
+          <ScalarProperty Name="Index" ColumnName="Index" />
+          <ScalarProperty Name="Page" ColumnName="Page" />
+          <ScalarProperty Name="ShowName" ColumnName="ShowName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Shop">
+      <EntityTypeMapping TypeName="RelexBarModel.Shop">
+        <MappingFragment StoreEntitySet="Shop">
+          <ScalarProperty Name="AgentType" ColumnName="AgentType" />
+          <ScalarProperty Name="ServicePhone" ColumnName="ServicePhone" />
+          <ScalarProperty Name="ChatQQ" ColumnName="ChatQQ" />
+          <ScalarProperty Name="BusinessLicense_Img" ColumnName="BusinessLicense_Img" />
+          <ScalarProperty Name="IDcard_Img2" ColumnName="IDcard_Img2" />
+          <ScalarProperty Name="IDcard_Img" ColumnName="IDcard_Img" />
+          <ScalarProperty Name="BackImg" ColumnName="BackImg" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="AreaID" ColumnName="AreaID" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TrueProduct">
+      <EntityTypeMapping TypeName="RelexBarModel.TrueProduct">
+        <MappingFragment StoreEntitySet="TrueProduct">
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Stock" ColumnName="Stock" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="RealPrice" ColumnName="RealPrice" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="SPDesc" ColumnName="SPDesc" />
+          <ScalarProperty Name="SPName" ColumnName="SPName" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="SPID" ColumnName="SPID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FavoritesProduct">
+      <EntityTypeMapping TypeName="RelexBarModel.FavoritesProduct">
+        <MappingFragment StoreEntitySet="FavoritesProduct">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdminMsg">
+      <EntityTypeMapping TypeName="RelexBarModel.AdminMsg">
+        <MappingFragment StoreEntitySet="AdminMsg">
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Result" ColumnName="Result" />
+          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Sender" ColumnName="Sender" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OrderProductList">
+      <EntityTypeMapping TypeName="RelexBarModel.OrderProductList">
+        <MappingFragment StoreEntitySet="OrderProductList">
+          <ScalarProperty Name="CashDiscount" ColumnName="CashDiscount" />
+          <ScalarProperty Name="Cash" ColumnName="Cash" />
+          <ScalarProperty Name="Comment" ColumnName="Comment" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+          <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+          <ScalarProperty Name="SPRemark" ColumnName="SPRemark" />
+          <ScalarProperty Name="SPDesc" ColumnName="SPDesc" />
+          <ScalarProperty Name="SPName" ColumnName="SPName" />
+          <ScalarProperty Name="SpecID" ColumnName="SpecID" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Count" ColumnName="Count" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductList">
+      <EntityTypeMapping TypeName="RelexBarModel.ProductList">
+        <MappingFragment StoreEntitySet="ProductList">
+          <ScalarProperty Name="CashDiscount" ColumnName="CashDiscount" />
+          <ScalarProperty Name="Payed" ColumnName="Payed" />
+          <ScalarProperty Name="DailySalary" ColumnName="DailySalary" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="BeginTime" ColumnName="BeginTime" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="Stock" ColumnName="Stock" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="RealPrice" ColumnName="RealPrice" />
+          <ScalarProperty Name="Descrition" ColumnName="Descrition" />
+          <ScalarProperty Name="ImgList" ColumnName="ImgList" />
+          <ScalarProperty Name="Img" ColumnName="Img" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="Number" ColumnName="Number" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ShopID" ColumnName="ShopID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RecordsOfConsumption">
+      <EntityTypeMapping TypeName="RelexBarModel.RecordsOfConsumption">
+        <MappingFragment StoreEntitySet="RecordsOfConsumption">
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="SumPrice" ColumnName="SumPrice" />
+          <ScalarProperty Name="ChildUID" ColumnName="ChildUID" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PayList">
+      <EntityTypeMapping TypeName="RelexBarModel.PayList">
+        <MappingFragment StoreEntitySet="PayList">
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="Val" ColumnName="Val" />
+          <ScalarProperty Name="FromTo" ColumnName="FromTo" />
+          <ScalarProperty Name="PayType" ColumnName="PayType" />
+          <ScalarProperty Name="InOut" ColumnName="InOut" />
+          <ScalarProperty Name="UID" ColumnName="UID" />
+          <ScalarProperty Name="CID" ColumnName="CID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdminRole">
+      <EntityTypeMapping TypeName="RelexBarModel.AdminRole">
+        <MappingFragment StoreEntitySet="AdminRole">
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdminRoleMenu">
+      <EntityTypeMapping TypeName="RelexBarModel.AdminRoleMenu">
+        <MappingFragment StoreEntitySet="AdminRoleMenu">
+          <ScalarProperty Name="MID" ColumnName="MID" />
+          <ScalarProperty Name="RID" ColumnName="RID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

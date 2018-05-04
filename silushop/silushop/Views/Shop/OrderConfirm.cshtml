@@ -1,0 +1,238 @@
+﻿
+@{
+    Layout = null;
+    RelexBarDLL.RecAddress rec = ViewData["defaultRecAdd"] as RelexBarDLL.RecAddress;
+    List<RelexBarDLL.RecAddress> addlist = ViewData["addlist"] as List<RelexBarDLL.RecAddress>;
+    //RelexBarDLL.RecAddress address = ViewData["recaddress"] as RelexBarDLL.RecAddress;
+    RelexBarDLL.OrderList order = ViewData["order"] as RelexBarDLL.OrderList;
+}
+@model List<RelexBarDLL.OrderProductList>
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>OrderConfirm</title>
+    <style>
+        #recaddlist{width:100%;height:100%;position:absolute;background-color:white;top:0;z-index:1000;display:none;}
+    </style>
+    <script>
+        var newList=[];
+        var list = [
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                if (i>0) {
+                    @(",")
+                }
+                @Html.Raw("{"+string.Format("ID:'{0}',Count:{1},Img:'{2}',Name:'{3}',Price:{4},ShopID:'{5}',ShopName:'{6}'",
+               Model[i].ID,Model[i].Count,Model[i].Img,Model[i].Name,Model[i].Price,Model[i].ShopID,Model[i].ShopName)+"}")
+            }
+        ];
+        function init() {
+            for (var i = 0; i < list.length; i++) {
+                var flag = true
+                for (var j = 0; j < newList.length && flag; j++) {
+
+                    if (list[i].ShopID == newList[j].ShopID) {
+                        newList[j].Data.push(list[i]);
+                        break;
+                    }
+                    if (j == newList.length - 1) {
+                        var temp = { ShopID: list[i].ShopID, ShopName: list[i].ShopName, Data: [] };
+                        temp.Data.push(list[i]);
+                        newList.push(temp);
+                        break;
+                    }
+                }
+                if (newList.length == 0) {
+                    var temp = { ShopID: list[i].ShopID, ShopName: list[i].ShopName, Data: [] };
+                    temp.Data.push(list[i]);
+                    newList.push(temp);
+                    continue;
+                }
+
+            }
+            var temphtml = [];
+            for (var i = 0; i < newList.length; i++) {
+                temphtml.push('<dl> <dt onclick="toShop(\'' + newList[i].ShopID + '\')"><div><i class="icon-shop"></i>' + newList[i].ShopName + '</div><i class="icon-chevron-thin-left"></i></dt>');
+                for (var j = 0; j < newList[i].Data.length; j++) {
+                    temphtml.push('<dd><div class="cartlist_pic"><a href="#" title="" class="cartlist_thumb"><img src="' + newList[i].Data[j].Img + '" alt=""></a></div>');
+                    temphtml.push('<div class="cartlist_info"><h4><a href="#" title="">' + newList[i].Data[j].Name + '</a></h4><h5>￥<strong class="item-p">' + newList[i].Data[j].Price + '</strong></h5>');
+                    temphtml.push('<div class="cartlist_jj jj clearfix"><div class="jj_btn">－</div><div class="jj_txt"><input class="item-c" type="number" readonly value="' + newList[i].Data[j].Count + '" /></div><div class="jj_btn">＋</div></div>');
+                    temphtml.push('<a title="" id="' + newList[i].Data[j].ID + '"  class="cartlist_del"><i class="icon-trash-2"></i></a></div></dd>');
+                }
+                temphtml.push('</dl>');
+            }
+
+            $("#cartlist").html(temphtml.join(""));
+        }
+        $(function () {
+            init();
+            resetSum();
+            $("#js").on("click", function () {
+                var recadd = $("#address").val();
+                if (recadd == "") {
+                    return alert("请选择收货地址");
+                }
+                var tdata = [];
+                for (var i = 0; i < list.length; i++) {
+                    tdata.push({id:list[i].ID,count:list[i].Count});
+                }
+                var datastr = JSON.stringify(tdata);
+                var notes = $("#notes").val();
+                $.post("/Shop/UpdateOrder/@ViewData["oid"]", "data=" + datastr + "&address=" + recadd + "&notes=" + notes, function (data) {
+                    if (data.code == 1) {
+                        location.href="/Shop/PaymentPattern/@ViewData["oid"]";
+                    }else{
+                        alert(data.msg);
+                    }
+                }, "json");
+
+
+
+            });
+            $(".cartlist_del").on("click", function () {
+
+                var c = $("#cartlist dd").length;
+                var bool=false;
+                if (c == 1) {
+                    bool = window.confirm("是否取消该订单？");
+                } else {
+                    bool = window.confirm("是否取消该商品？");
+                }
+                if (bool) {
+                    var id = $(this).attr("id");
+                    $.post("/Shop/DeleteOrderItem", "id=" + id, function (data) {
+                        if (data.code == 1) {
+                            if (c == 1) {
+                                location.href = document.referrer;
+                            }
+                            var $dl = $("#" + id).parents("dl");
+                            if ($dl.find("dd").length == 1) {
+                                $dl.remove();
+                            } else {
+                                $("#" + id).parents("dd").remove();
+                            }
+                            resetSum();
+
+                        } else {
+                            alert("删除失败");
+                        }
+                    }, "json");
+                } else {
+                    return;
+                };
+            });
+            $(".jj_btn").on("click", function () {
+                var t = $(this).text();
+                var $c = $(this).parent().find(".item-c");
+                var c = parseInt($c.val());
+                
+                if (t == "＋") {
+                    c += 1;
+                    $c.val(c);
+                } else {
+                    if (c > 1) {
+                        c -= 1;
+                        $c.val(c);
+                    }
+                }
+                var id = $(this).parent().parent().find(".cartlist_del").attr("id");
+                setCount(id,c);
+                resetSum();
+            });
+        });
+        function setCount(id, count) {
+            for (var i = 0; i < list.length; i++) {
+                if (id == list[i].ID) {
+                    list[i].Count = count;
+                    break;
+                }
+            }
+        }
+        function resetSum() {
+            var sum = 0;
+            var count = 0;
+            $("dd").each(function () {
+                var tcount=parseFloat($(this).find(".item-c").val());
+                var item_sum = parseFloat($(this).find(".item-p").text()) * tcount;
+                sum += item_sum;
+                count += tcount;
+            });
+            $("#price0").text(sum);
+            $("#price").text(sum);
+            $("#pcount").text(count);
+        }
+        function toShop(id) {
+            location.href = "/Shop/ShopHome/" + id;
+        }
+        function recaddressClick(id, e) {
+            $("#address").val(id);
+            $("#addlist").html($(e).html());
+            $("#recaddlist").hide();
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>确认订单</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+    <div class="address">
+        <input type="hidden" id="address" value="@(rec==null?"":rec.ID.ToString())" />
+        <ul id="addlist">
+            @if (rec != null)
+            {
+                <li>
+                    <div class="address_info">
+                        <h6>@rec.Address.Replace(",", "")</h6>
+                        <p>@rec.TrueName  @rec.Phone</p>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="catraddres_btn"><a href="#" onclick="$('#recaddlist').show()" style="background:#5ca87e">选择收货地址</a></div>
+    <div id="cartlist" class="cartlist">
+        
+    </div>
+    <div class="cartok_info">
+        <ul>
+            <li><div class="cartok_info_left">配送</div><div class="cartok_info_right tr">快递：0.00元</div></li>
+            @*<li><div class="cartok_info_left">是否需要开发票</div><div class="cartok_info_right tr"><input type="checkbox" name=""> 需要</div></li>*@
+            <li><div class="cartok_info_left">买家留言：</div><div class="cartok_info_right"><input value="@order.Notes" type="text" id="notes" placeholder="选填，可填写您和卖家达成一致要求" class="cartok_info_message" /></div></li>
+            <li><div class="cartok_info_left">共<span id="pcount">0</span>件商品</div><div class="cartok_info_right tr">合计：<strong><font color="#ff3300">￥<span id="price0">0</span></font></strong></div></li>
+        </ul>
+    </div>
+    <div class="cartbalancebox"></div>
+    <div class="cartbalance cartbalance_nochoose" style="bottom:0;">
+        <div class="cartbalance_info"><h4>合计：<strong>￥<span id="price">0</span></strong></h4><p>订单满100元，享免费配送服务</p></div>
+        <a id="js" title="" class="cartbalance_btn">结算</a>
+    </div>
+    <div id="recaddlist">
+        <div class="header">
+            <h3>收货地址</h3>
+            <a href="#" title=""><i class="icon-chevron-thin-left" onclick="$('#recaddlist').hide()"></i></a>
+        </div>
+        <div class="address">
+            <ul>
+
+            </ul>
+        </div>
+        <div class="h20"></div>
+        <div class="btn1"><a href="/Account/RecAddress"><input type="button" value="地址管理" /></a></div>
+        <div class="h20"></div>
+    </div>
+    <script>
+        $.post("/shop/GetAddressList", "", function (data) {
+            var d = jQuery.parseJSON(data.msg);
+            var html = "";
+            for (var i = 0; i < d.length; i++)
+            {
+                html += '<li onclick="recaddressClick(\''+d[i].ID+'\',this)"><div class="address_info"><h6>'+d[i].Address+'</h6><p>'+d[i].TrueName+'  '+d[i].Phone+'</p></div></li>';
+            }
+            $('#recaddlist ul').html(html);
+        },"JSON");
+    </script>
+</body>
+</html>

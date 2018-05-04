@@ -1,0 +1,130 @@
+﻿<style>
+    #jjyypanel{
+        margin-top:10%;
+        padding:0;
+    }
+</style>
+<script>
+    var hasFooter = false;
+    var TranManager = {};
+    function createFooter(sum) {
+        if (!hasFooter) {
+            $(".pagination").createPage({
+
+                totalPage: parseInt((sum - 1) / 10 + 1),
+                // totalPage: 10,
+                currPage: 1,
+                backFn: function (p) {
+                    GetTranList(p);
+                }
+            });
+            hasFooter = true;
+        }
+
+    }
+    function toPage(index) {
+        GetTranList(index);
+    };
+    //获取用户列表
+    function GetTranList(index) {
+        waiting();
+        $.get("TransforoutList", "index=" + index + "&key=" + TranManager.searchKey, function (data) {
+            TranManager.index = index;
+            $("#tranbody").html(data);
+            waitingHide();
+        }, "html")
+    }
+    TranManager.searchKey = "";
+    function USearch() {
+        TranManager.searchKey = $("#key").val();
+        hasFooter = false;
+        $(".pagination").html("");
+        GetTranList(1);
+    }
+    function txSuccess(id) {
+        waiting();
+        $.post("TransforoutUpdate", "ID=" + id + "&status=1", function (data) {
+            if (data.code == "1") {
+                alert("操作成功");
+            } else {
+                alert("操作失败");
+            }
+            waitingHide();
+            GetTranList(TranManager.index);
+        });
+    }
+    function txFaild(id) {
+        $("#txID").val(id);
+        $("#jjyy").show();
+    }
+    function DoTxFaild() {
+        waiting();
+        $.post("TransforoutUpdate", "ID=" + $("#txID").val() + "&status=-1&remark=" + $("#ApplyRemark").val(), function (data) {
+            if (data.code == "1") {
+                alert("操作成功");
+                jjyyClose();
+            } else {
+                alert("操作失败");
+            }
+            waitingHide();
+            GetTranList(TranManager.index);
+            
+        });
+    }
+    function jjyyClose() {
+        $('#jjyy').hide();
+        $("#txID").val("");
+        $("#ApplyRemark").val("")
+    }
+</script>
+<ol class="breadcrumb">
+    <li><a onclick="GetManager('Default')">首页</a></li>
+    <li><a href="#">回购管理</a></li>
+</ol>
+<div class="col-lg-12 form-inline">
+    关键字：
+    <div class="input-group col-lg-4">
+        <input type="text" class="form-control" id="key">
+        <span class="input-group-addon" onclick="USearch()">查询</span>
+    </div>
+    <div class="col-lg-12" id="tranlist">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>会员编号</th>
+                    <th>账号</th>
+                    <th>银行信息</th>
+                    <th>回购额度</th>
+                    <th>手续费</th>
+                    <th>费后提现</th>
+                    <th>回购原因</th>
+                    <th>拒绝原因</th>
+                    <th>处理状态</th>
+                    <th>操作</th>
+                    <th>申请时间</th>
+                </tr>
+            </thead>
+            <tbody id="tranbody">
+                @Html.Action("TransforoutList")
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination"></ul>
+        </nav>
+    </div>
+</div>
+<div class="showBack col-md-12" id="jjyy">
+    <div class="panel panel-danger col-md-4 col-md-offset-4" id="jjyypanel">
+        <div class="panel-heading">
+            拒绝原因<input type="button" class="btn btn-default" style="float:right;margin-top:-7px" value="关闭" onclick="jjyyClose()" />
+        </div>
+        <div class="panel-body">
+            <input type="hidden" id="txID" />
+            <input type="text" id="ApplyRemark" class="form-control" />
+        </div>
+        <div class="panel-footer" style="overflow:hidden">
+            <input type="button" value="保存" class="btn btn-primary" style="float:right" onclick="DoTxFaild()" />
+        </div>
+    </div>
+    
+</div>

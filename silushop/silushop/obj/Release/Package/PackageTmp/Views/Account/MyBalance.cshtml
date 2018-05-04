@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.Users
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>我的余额</title>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>我的余额</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+        <a href="/Account/PayList" title="" class="header_wzlink">明细</a>
+    </div>
+    <div class="balance_top">
+        <h6>可用余额（元）</h6>
+        <h5>@Model.Balance</h5>
+        @*<p>暂缓金额：@ViewData["zhje"] 元</p>*@
+    </div>
+    @*<div class="balance_link"><a href="#" title="" class="clearfix"><strong>消费积分</strong><span>@ViewData["xfjf"]</span><i class="balance_link_pic"><img src="/images/ico26.png" alt=""></i><i class="icon-chevron-thin-left"></i></a></div>*@
+    <div class="balance_link"><a href="/Account/Transforout" title="" class="clearfix"><strong>回购</strong><i class="balance_link_pic"><img src="/images/ico27.png" alt=""></i><i class="icon-chevron-thin-left"></i></a></div>
+    <div class="balance_link"><a href="/Account/EditBank/@ViewData["bankid"]" title="" class="clearfix"><strong>我的银行卡</strong><span>@ViewData["bankcount"] 张</span><i class="balance_link_pic"><img src="/images/ico28.png" alt=""></i><i class="icon-chevron-thin-left"></i></a></div>
+    <div>
+        <p style="padding-left:1rem;line-height:2rem">
+            1，关于易物劵释放：易物劵除以300天每日释放出来，其中50%到“今日行票”，30%到“回馈易物劵”、10%到“行票消费劵”、10%手续费直接扣除。例如：30000易物劵，按300天计，每天释放出来100，其中50进到“今日行票”，30进入“回馈易物劵”，10进入“行票消费劵”，10手续费直接扣除不用显示。
+            <br/>
+            2，普通会员推荐牙商奖励的50、牙商直推的100、间推的20、消费奖励的2%、1%每单直接进入“今日行票”，每日结算时汇集到“行票回购”，点击行票回购时，全额进入银行卡。
+        </p>
+    </div>
+</body>
+</html>

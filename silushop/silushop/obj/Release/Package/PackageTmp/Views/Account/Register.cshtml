@@ -1,0 +1,126 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   @Html.Action("Header", "Static")
+    <title>登陆</title>
+    <style>
+        .wjmm{margin: 0.5rem;
+    float: right;
+    color: blue;}
+    </style>
+    <script>
+        $(function () {
+            $("#yzm").on("click", function () {
+                var c = 60;
+                $(this).attr("disabled", "disabled");
+                var timer = setInterval(function () {
+                    c--;
+                    if (c == 0) {
+                        $("#yzm").val("获取验证码");
+                        $("#yzm").removeAttr("disabled");
+                        clearInterval(timer);
+                    } else {
+                        $("#yzm").val(c + "秒后重试");
+                    }
+
+                }, 1000);
+                $.post("/Verifycode/getVerifyCode?t=2&r=" + $("#account").val() + "&v=" + Math.random(), null, function (data) { }, "json");
+
+            });
+            $("#login").on("click", function () {
+                var account = $("#account").val();
+                var pwd = $("#pwd").val();
+                var yzm = $("#code").val();
+                var name = $("#name").val();
+                var cardnum = $("#cardnum").val();
+                if (account == ""||account.length==0) {
+                    return alert("账户不能为空");
+                }
+                if (pwd == ""||pwd.length==0) {
+                    return alert("密码不能为空");
+                }
+                if (yzm == "" || yzm.length == 0) {
+                    return alert("验证码不能为空");
+                }
+                if (name == "" || name.length == 0) {
+                    return alert("姓名不能为空");
+                }
+                if (cardnum == "" || cardnum.length == 0) {
+                    return alert("身份证号不能为空");
+                }
+
+                $.post("Register", "tjr=" + $("#tjr").val() + "&account=" + account + "&name=" + name + "&pwd=" + pwd + "&yzm=" + yzm + "&cardnum=" + cardnum, function (data) {
+                    if (data.code == 1) {
+                        alert("恭喜您注册成功！");
+                        if (document.referrer != "" && document.referrer.indexOf("Regist") == -1 && document.referrer.indexOf("Login") == -1 && document.referrer.indexOf("AccountSafe")==-1) {
+                            location.href = document.referrer;
+                        } else {
+                            location.href = "http://silugufen.com/Download/download/index.html";
+                        }
+
+                    } else {
+                        alert(data.msg);
+                        if (data.code == -3) {
+                            $("#yzmcode").val("");
+                            $("#yzm").attr("src", "/Verifycode/getVerifyCode?t=1&v=" + Math.random());
+                        }
+                    }
+                }, "json");
+            });
+        });
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>注册</h3>
+        <a href="/shop/index" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+
+    <div class="account">
+        <ul>
+            <li>
+                <div class="account_left">手机号：</div>
+                <div class="account_right"><div class="account_account"><input id="account" type="text" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">姓名：</div>
+                <div class="account_right"><div class="account_password"><input id="name" type="text" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">身份证：</div>
+                <div class="account_right"><div class="account_password"><input id="cardnum" type="text" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">密码：</div>
+                <div class="account_right"><div class="account_password"><input id="pwd" type="password" /></div></div>
+            </li>
+            <li>
+                <div class="account_left">验证码：</div>
+                <div class="account_right">
+                    <div class="account_code">
+                        <input type="text" id="code" />
+                        <a href="#" title="" class="code">
+                            <input value="获取验证码" id="yzm" type="button" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="account_left">推荐人：</div>
+                <div class="account_right">
+                    <div class="account_password"><input id="tjr" type="text" value="@ViewData["FName"]" /></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div style="float:right;right:2rem;line-height:2rem"><label><input type="checkbox" checked="checked" />同意</label><a style="color:blue" href="RegisterRule">[用户注册协议]</a></div>
+    <div class="btn1"><input type="button" id="login" value="确认" /></div>
+    <div class="footnavbox"></div>
+</body>
+</html>

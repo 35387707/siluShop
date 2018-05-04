@@ -1,0 +1,81 @@
+﻿
+@{
+    Layout = null;
+}
+@model RelexBarDLL.BankList
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Html.Action("Header", "Static")
+    <title>@(Model == null ? "添加" : "编辑")银行卡</title>
+    <style>
+        select{border:none;font-size:1.6rem;}
+    </style>
+    <script>
+        function dosub() {
+            if (IsNullOrEmpty($("#BankUser").val())) {
+                return alert("真实姓名不能为空");
+            }
+            if (IsNullOrEmpty($("#BankName").val())) {
+                return alert("开户银行不能为空");
+            }
+            if (IsNullOrEmpty($("#BankZhiHang").val())) {
+                return alert("银行支行不能为空");
+            }
+            if (IsNullOrEmpty($("#BankAccount").val())) {
+                return alert("银行账号不能为空");
+            }
+            $.post("/Account/DoEditBank", $("#editbank").serialize(), function (data) {
+                alert(data.msg);
+                if (data.code == "1") {   
+                    window.history.back();
+                }
+            }, "json");
+        }
+        function IsNullOrEmpty(str) {
+            if (str == null || str == "" || str.length == 0) {
+                return true;
+            }
+            return false;
+        }
+    </script>
+</head>
+<body class="bgf4f4f4">
+    <div class="header">
+        <h3>@(Model == null ? "添加" : "编辑")银行卡</h3>
+        <a onclick="window.history.back()" title=""><i class="icon-chevron-thin-left"></i></a>
+    </div>
+@using (Html.BeginForm("DoEditBank", "Bank", FormMethod.Post, new { id = "editbank" }))
+{
+    <div class="account">
+        <ul>
+            <li>
+                <div class="account_left">真实姓名：</div>
+                @Html.HiddenFor(m=>m.ID)
+                <div class="account_right">
+                    <div class="account_account">
+                        @Html.TextBoxFor(m => m.BankUser, new { placeholder = "请输入持卡人姓名" })
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="account_left">开户银行：</div>
+                <div class="account_right"><div class="account_password">@Html.DropDownListFor(m => m.BankName, ViewData["bankList"] as SelectList, new { placeholder = "招商银行" })</div></div>
+            </li>
+            <li>
+                <div class="account_left">银行支行：</div>
+                <div class="account_right"><div class="account_password">@Html.TextBoxFor(m => m.BankZhiHang, new { placeholder = "请填写银行开户支行" })</div></div>
+            </li>
+            <li>
+                <div class="account_left">银行帐号：</div>
+                <div class="account_right"><div class="account_code">@Html.TextBoxFor(m => m.BankAccount, new { @class = "acc-iptTxt", placeholder = "请填写银行帐号" })</div></div>
+            </li>
+        </ul>
+    </div>
+}
+    @*<div class="account_other" style="text-align:center"><font color="#ff0000">保存之后不能新增、修改</font></div>*@
+    <div class="btn1"><input id="sub" type="button" value="确认" onclick="dosub()"/></div>
+    <div class="footnavbox"></div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+﻿@model List<RelexBarDLL.BirthdayCard>
+@for (int i = 0; i < Model.Count; i++)
+{
+    <tr>
+        <td>@Model[i].Name</td>
+        <td><img width="100" src="@Model[i].IMG"/></td>
+        <td>@Model[i].Remark</td>
+        <td>
+            <input type="button" class="btn btn-danger" value="@((Model[i].Status==1)?"启用":"禁用")" onclick="CStatus('@Model[i].ID',this)" />
+        </td>
+        <td>@Model[i].CreateTime</td>
+        <td><input type="button" value="修改" onclick="EditBirthdayCard('@Model[i].ID','@Model[i].Name','@Model[i].Remark','@Model[i].IMG')" class="btn btn-danger" /></td>
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>

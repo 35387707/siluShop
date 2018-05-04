@@ -1,0 +1,26 @@
+﻿@model List<RelexBarBLL.Models.AdminMsgModel>
+@for (int i = 0; i < Model.Count; i++)
+{
+
+    <tr id="@Model[i].ID">
+        <td>@Model[i].SenderAccount</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+            @(Model[i].Result==-1?"未处理":Model[i].Result==0?"已拒绝":"已同意")
+        </td>
+        <td>
+            @if (Model[i].Result==-1) {
+                <input type="button" onclick="CResult('@Model[i].ID',this)" class="btn btn-primary" value="同意"/>
+                <input type="button" onclick="CResult('@Model[i].ID',this)" class="btn btn-danger" value="拒绝"/>
+            }
+            <script>
+                ShopReqManager.datapush("@Model[i].ID",@Html.Raw(Model[i].Content));
+            </script>
+        </td>
+        
+    </tr>
+}
+<script>createFooter(@ViewData["sum"])</script>
